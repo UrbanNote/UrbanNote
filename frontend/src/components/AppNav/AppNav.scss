@@ -1,0 +1,23 @@
+.AppNav {
+  user-select: none;
+
+  &.--vertical {
+    width: 70px;
+  }
+
+  .AppNav__Link {
+    text-decoration: none;
+    color: var(--bs-dark);
+    font-size: 10px;
+    font-weight: 600;
+    transition: color 0.2s ease;
+
+    &.active {
+      color: var(--bs-link-color);
+    }
+
+    &:hover:not(.active) {
+      color: var(--bs-link-hover-color);
+    }
+  }
+}

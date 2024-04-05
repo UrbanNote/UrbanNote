@@ -1,0 +1,6 @@
+{
+  "include": [".eslintrc.cjs", "jest.config.js", "tests"],
+  "compilerOptions": {
+    "types": ["jest", "node"]
+  }
+}

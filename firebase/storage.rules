@@ -1,0 +1,50 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isValidFile() {
+      let isImage = request.resource.contentType.matches('image/.*');
+      let isWithinSizeLimit = request.resource.size < 5 * 1024 * 1024; // 5MB
+      return isWithinSizeLimit && isImage;
+    }
+
+    function canReadEntity(entityId, entityType) {
+      let entity = getEntity(entityId, entityType);
+
+      // Only the user assigned to the expense, or users with the appropriate role
+      return !entity.exists ||
+        entity.data().assignedToId == request.auth.uid || 
+        (entityType == expenseDetails && hasExpenseManagementRole());
+    }
+
+    function canReadFile(metadata) {
+      return isFileOwner(metadata) || canReadEntity(metadata.entityId, metadata.entityType);
+    }
+
+    function isFileOwner(metadata) {
+      return metadata.userId == request.auth.uid;
+    }
+
+    function getEntity(entityId, entityType) {
+      return get(/databases/$(database)/documents/$(entityType)/$(entityId));
+    }
+
+    function getUserRoles() {
+      return get(/databases/$(database)/documents/userRoles/$(request.auth.uid)).data;
+    }
+
+    function hasExpenseManagementRole() {
+      let roles = getUserRoles();
+      return roles.admin == true || roles.expenseManagement == true;
+    }
+
+    match /{allPaths=**} {
+      allow read: if isAuthenticated() && canReadFile(resource.metadata);
+      allow write: if isAuthenticated() && isValidFile();
+    }
+  }
+}

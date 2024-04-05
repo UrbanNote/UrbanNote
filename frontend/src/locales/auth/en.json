@@ -1,0 +1,26 @@
+{
+  "signIn": {
+    "enterEmailPrompt": "Please enter your email address and we'll send you a link to sign in.",
+    "verifyEmailPrompt": {
+      "start": "We have sent a link to:",
+      "end": "Click the link in the email to sign in."
+    },
+    "error": {
+      "unexpected": "An unexpected error occurred. Please try again later.",
+      "invalidUrl": "The link you have entered is invalid. Please try again with a new link."
+    },
+    "form": {
+      "email": {
+        "label": "Email address",
+        "placeholder": "Enter your email address",
+        "invalid": "Please enter a valid email address.",
+        "required": "This field is required."
+      },
+      "submit": "Sign in"
+    },
+    "loading": "Hang on while we sign you in...",
+    "title": "Sign in",
+    "verifyEmail": "Verify your inbox",
+    "welcome": "Welcome!"
+  }
+}

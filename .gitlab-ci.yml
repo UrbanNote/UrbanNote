@@ -1,0 +1,69 @@
+image: node:18.16.0-alpine
+
+stages:
+  - integration
+  - deploy
+
+variables:
+  NODE_VERSION: "18.16.0"
+
+cache:
+  paths:
+    - frontend/node_modules
+    - functions/node_modules
+
+before_script:
+  - cd ./frontend && truncate -s 0 .env
+  - yarn install && yarn build
+  - cd ../functions && yarn install && yarn build
+  - cd ../
+
+integration:
+  stage: integration
+  script:
+    - cd ./frontend
+    - yarn lint
+    - cd ../functions
+    - yarn lint
+    - yarn test
+    - cd ../
+  only:
+    - merge_requests
+    - main
+
+deploy_dev:
+  stage: deploy
+  script:
+    - cd ./frontend
+    - echo "VITE_APP_PUBLIC_URL=$VITE_APP_PUBLIC_URL" >> .env
+    - echo "VITE_FIREBASE_API_KEY=$VITE_FIREBASE_API_KEY" >> .env
+    - echo "VITE_FIREBASE_AUTH_DOMAIN=$VITE_FIREBASE_AUTH_DOMAIN" >> .env
+    - echo "VITE_FIREBASE_PROJECT_ID=$VITE_FIREBASE_PROJECT_ID" >> .env
+    - echo "VITE_FIREBASE_STORAGE_BUCKET=$VITE_FIREBASE_STORAGE_BUCKET" >> .env
+    - echo "VITE_FIREBASE_MESSAGING_SENDER_ID=$VITE_FIREBASE_MESSAGING_SENDER_ID" >> .env
+    - echo "VITE_FIREBASE_APP_ID=$VITE_FIREBASE_APP_ID" >> .env
+    - echo "VITE_FIREBASE_MEASUREMENT_ID=$VITE_FIREBASE_MEASUREMENT_ID" >> .env
+    - yarn build
+    - cd ../
+    - yarn global add firebase-tools
+    - firebase deploy --token $FIREBASE_TOKEN --project default
+  only:
+    - main
+
+deploy_cstr:
+  stage: deploy
+  script:
+    - cd ./frontend
+    - echo "VITE_APP_PUBLIC_URL=$CSTR_VITE_APP_PUBLIC_URL" >> .env
+    - echo "VITE_FIREBASE_API_KEY=$CSTR_VITE_FIREBASE_API_KEY" >> .env
+    - echo "VITE_FIREBASE_AUTH_DOMAIN=$CSTR_VITE_FIREBASE_AUTH_DOMAIN" >> .env
+    - echo "VITE_FIREBASE_PROJECT_ID=$CSTR_VITE_FIREBASE_PROJECT_ID" >> .env
+    - echo "VITE_FIREBASE_STORAGE_BUCKET=$CSTR_VITE_FIREBASE_STORAGE_BUCKET" >> .env
+    - echo "VITE_FIREBASE_MESSAGING_SENDER_ID=$CSTR_VITE_FIREBASE_MESSAGING_SENDER_ID" >> .env
+    - echo "VITE_FIREBASE_APP_ID=$CSTR_VITE_FIREBASE_APP_ID" >> .env
+    - yarn build
+    - cd ../
+    - yarn global add firebase-tools
+    - firebase deploy --token $FIREBASE_TOKEN --project cstr
+  only:
+    - release/cstr

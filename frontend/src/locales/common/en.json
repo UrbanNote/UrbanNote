@@ -1,0 +1,27 @@
+{
+  "settings": "Settings",
+  "signOut": "Sign Out",
+  "signIn": {
+    "title": "Welcome",
+    "submit": "Sign In"
+  },
+  "appNav": {
+    "home": "Home",
+    "expenses": "Expenses",
+    "notes": "Notes",
+    "resources": "Resources",
+    "users": "Users"
+  },
+  "picturesField": {
+    "cta": "Drag and drop some pictures here, or click to select files to upload.",
+    "ctaTouchscreen": "Tap to upload a picture",
+    "errors": {
+      "rejected": "Your file '{{name}}' was rejected. Please select a valid image file with format .jpg, .png or .heic and a maximum size of 5MB.",
+      "unknown": "An unexpected error has occured. Please try again later."
+    }
+  },
+  "confirm": "Confirm",
+  "cancel": "Cancel",
+  "en": "English",
+  "fr": "French"
+}

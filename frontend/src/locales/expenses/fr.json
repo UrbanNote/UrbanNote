@@ -1,0 +1,83 @@
+{
+  "title": "Dépenses",
+  "actions": {
+    "delete": "Supprimer",
+    "edit": "Modifier"
+  },
+  "create": {
+    "confirm": "Créer",
+    "errors": {
+      "expenseMinimumAmount": "Le montant de la dépense doit être supérieur à 0.00$.",
+      "expenseMaximumDate": "La date de la dépense ne peut pas être dans le futur.",
+      "permissionDenied": "Vous n'avez pas la permission d'effectuer cette action.",
+      "unexpected": "Une erreur inattendue est survenue. Veuillez réessayer plus tard."
+    },
+    "success": "La dépense a été créée avec succès.",
+    "title": "Créer une dépense"
+  },
+  "edit": {
+    "confirm": "Sauvegarder",
+    "errors": {
+      "acceptedExpenseNotEditable": "La dépense que vous tentez de modifier est déjà approuvée et ne peut pas être modifiée.",
+      "expenseNotFound": "La dépense que vous tentez de modifier n'existe pas.",
+      "oldExpenseNotEditable": "La dépense que vous tentez de modifier date de plus d'un an et ne peut pas être modifiée.",
+      "permissionDenied": "Vous n'avez pas la permission d'effectuer cette action.",
+      "unexpected": "Une erreur inattendue est survenue. Veuillez réessayer plus tard."
+    },
+    "success": "La dépense a été sauvegardée avec succès.",
+    "title": "Modifier une dépense"
+  },
+  "createOrEdit": {
+    "fields": {
+      "category": {
+        "label": "Catégorie"
+      },
+      "title": {
+        "label": "Titre",
+        "placeholder": "Entrez un titre",
+        "required": "Veuillez entrer un titre."
+      },
+      "description": {
+        "label": "Description",
+        "placeholder": "Entrez une description"
+      },
+      "amount": {
+        "label": "Montant",
+        "required": "Veuillez entrer un montant.",
+        "min": "Veuillez entrer un montant supérieur à 0.00$."
+      },
+      "date": {
+        "label": "Date",
+        "required": "Veuillez entrer une date."
+      },
+      "pictureURL": {
+        "label": "Photos"
+      }
+    }
+  },
+  "delete": {
+    "title": "Êtes-vous sûr?",
+    "message": "Voulez-vous vraiment supprimer cette dépense? Cette action est irréversible.",
+    "confirm": "Supprimer"
+  },
+  "categories": {
+    "travel": "Déplacement",
+    "parking": "Stationnement",
+    "equipment": "Matériel",
+    "restaurant": "Restaurant",
+    "convenience": "Dépanneur",
+    "grocery": "Épicerie"
+  },
+  "status": {
+    "archived": "Archivée",
+    "approved": "Approuvée",
+    "pending": "En attente",
+    "rejected": "Refusée"
+  },
+  "view": {
+    "error": "Une erreur inattendue s'est produite lors du chargement des dépenses. Veuillez réessayer plus tard.",
+    "empty": "Vous n'avez présentement aucune dépense en attente d'approbation."
+  },
+  "picture": "photo",
+  "pictures": "photos"
+}

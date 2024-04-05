@@ -1,0 +1,44 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function getUserRoles() {
+      return get(/databases/$(database)/documents/userRoles/$(request.auth.uid)).data;
+    }
+
+    function hasExpenseManagementRole() {
+      let roles = getUserRoles();
+      return roles.admin == true || roles.expenseManagement == true;
+    }
+
+    function hasResourceManagementRole() {
+      let roles = getUserRoles();
+      return roles.admin == true || roles.resourceManagement == true;
+    }
+
+    function hasUserManagementRole() {
+      let roles = getUserRoles();
+      return roles.admin == true || roles.userManagement == true;
+    }
+
+    function isAuthenticated() {
+      return request.auth.uid != null;
+    }
+    
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    match /userProfiles/{userId} {
+      allow read: if isAuthenticated();
+    }
+
+    match /userRoles/{userId} {
+      allow read: if isAuthenticated() && (hasUserManagementRole() || request.auth.uid == userId);
+    }
+
+    match /expenseDetails/{expenseId} {
+      allow read: if isAuthenticated() && (hasExpenseManagementRole() || request.auth.uid == resource.data.assignedToId);
+    }
+  }
+}

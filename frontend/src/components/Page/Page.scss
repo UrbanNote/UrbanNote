@@ -1,0 +1,8 @@
+.Page {
+  border-radius: 12px;
+  transition: background-color 0.2s ease;
+
+  &.--vertical {
+    height: calc(100vh - 70px);
+  }
+}

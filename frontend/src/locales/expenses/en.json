@@ -1,0 +1,88 @@
+{
+  "title": "Expenses",
+  "actions": {
+    "delete": "Delete",
+    "edit": "Edit"
+  },
+  "create": {
+    "confirm": "Create",
+    "errors": {
+      "expenseMinimumAmount": "Please enter an amount greater than $0.00.",
+      "expenseMaximumDate": "Please enter a date in the past.",
+      "permissionDenied": "You are not allowed to perform this action.",
+      "unexpected": "An unexpected error has occured. Please try again later."
+    },
+    "success": "Your expense has been created successfully.",
+    "title": "Create Expense"
+  },
+  "edit": {
+    "confirm": "Save",
+    "errors": {
+      "acceptedExpenseNotEditable": "You cannot edit an expense that has already been accepted.",
+      "expenseNotFound": "The expense you are trying to edit does not exist.",
+      "oldExpenseNotEditable": "You cannot edit an expense that is older than 1 year.",
+      "unexpected": "An unexpected error has occured. Please try again later.",
+      "permissionDenied": "You are not allowed to perform this action."
+    },
+    "success": "Your expense has been saved successfully.",
+    "title": "Edit Expense"
+  },
+  "createOrEdit": {
+    "fields": {
+      "category": {
+        "label": "Category"
+      },
+      "title": {
+        "label": "Title",
+        "placeholder": "Enter a title",
+        "required": "Please enter a title."
+      },
+      "description": {
+        "label": "Description",
+        "placeholder": "Enter a description"
+      },
+      "amount": {
+        "label": "Amount",
+        "required": "Please enter an amount.",
+        "min": "Please enter an amount greater than $0.00."
+      },
+      "date": {
+        "label": "Date",
+        "required": "Please enter a date."
+      },
+      "pictureURL": {
+        "label": "Pictures"
+      }
+    }
+  },
+  "delete": {
+    "title": "Are you sure?",
+    "message": "Do you really want to delete this expense? This action cannot be undone.",
+    "confirm": "Delete"
+  },
+  "categories": {
+    "travel": "Travel",
+    "parking": "Parking",
+    "equipment": "Equipment",
+    "restaurant": "Restaurant",
+    "convenience": "Convenience",
+    "grocery": "Grocery"
+  },
+  "status": {
+    "archived": "Archived",
+    "approved": "Approved",
+    "pending": "Pending",
+    "rejected": "Rejected"
+  },
+  "view": {
+    "error": "An unexpected error has occured while trying to load expenses. Please try again later.",
+    "empty": "You currently have no expenses awaiting approval."
+  },
+  "useExpenses": {
+    "errors": {
+      "unexpected": "An unexpected error has occured while trying to load expenses. Please try again later."
+    }
+  },
+  "picture": "picture",
+  "pictures": "pictures"
+}

@@ -1,0 +1,26 @@
+.TopNav {
+  background-color: var(--white);
+
+  min-height: 54px;
+
+  &.--vertical {
+    height: 70px;
+  }
+
+  .TopNav__Title {
+    font-weight: 600;
+    font-size: 1.4rem;
+  }
+
+  .navbar-brand img {
+    display: block;
+  }
+
+  .TopNav__UserMenu {
+    .TopNav__UserMenu__Toggle {
+      &::after {
+        display: none;
+      }
+    }
+  }
+}

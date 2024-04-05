@@ -1,0 +1,107 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+// Override Bootstrap
+$teal: #5ab1a3;
+$primary: $teal;
+$orange: #eb7159;
+$secondary: $orange;
+$light: #f7f7f0;
+$beige: #f1f1e4;
+$dark: #2e2543;
+
+$alert-border-radius: 1rem;
+$button-border-radius: 1rem;
+
+@import 'bootstrap/scss/bootstrap';
+
+$light-text-colors: (
+  'primary': $teal,
+  'secondary': $orange,
+  'success': $green,
+  'danger': $red,
+  'info': $blue,
+  'dark': $dark,
+);
+
+$dark-text-colors: (
+  'warning': $yellow,
+  'light': $light,
+);
+
+@each $state in map-keys($theme-colors) {
+  .alert-#{$state} {
+    --#{$prefix}alert-bg: var(--#{$prefix}#{$state});
+    --#{$prefix}alert-border-color: var(--#{$prefix}#{$state}-bg);
+  }
+}
+
+@each $state in map-keys($light-text-colors) {
+  .btn-#{$state} {
+    --#{$prefix}btn-color: var(--#{$prefix}white);
+    --#{$prefix}btn-hover-color: var(--#{$prefix}white);
+  }
+
+  .alert-#{$state} {
+    --#{$prefix}alert-color: var(--#{$prefix}white);
+  }
+}
+
+@each $state in map-keys($dark-text-colors) {
+  .btn-#{$state} {
+    --#{$prefix}btn-color: var(--#{$prefix}black);
+    --#{$prefix}btn-hover-color: var(--#{$prefix}black);
+  }
+
+  .alert-#{$state} {
+    --#{$prefix}alert-color: var(--#{$prefix}black);
+  }
+}
+
+.firebase-emulator-warning {
+  display: none;
+}
+
+$headings-font-weight: 600;
+
+:root {
+  --bs-primary-100: #{$teal-100};
+  --bs-beige: #{$beige};
+}
+
+body {
+  font-family: 'Inter';
+  background-color: $light;
+  min-height: 100vh;
+}
+
+.firebase-emulator-warning {
+  display: none;
+}
+
+.bg-beige {
+  background-color: $beige;
+}
+
+.bg-primary-100 {
+  background-color: $teal-100;
+}
+
+.text-gray {
+  color: $gray-500;
+}
+
+.text-primary-600 {
+  color: $teal-600;
+}
+
+.text-primary-700 {
+  color: $teal-700;
+}
+
+.rounded-bottom-end-5 {
+  border-bottom-left-radius: var(--bs-border-radius-xxl) !important;
+}
+
+.w-fit {
+  width: fit-content !important;
+}

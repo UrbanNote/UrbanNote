@@ -1,0 +1,27 @@
+{
+  "settings": "Réglages",
+  "signOut": "Déconnexion",
+  "signIn": {
+    "title": "Bienvenue",
+    "submit": "Se connecter"
+  },
+  "appNav": {
+    "home": "Accueil",
+    "expenses": "Dépenses",
+    "notes": "Notes",
+    "resources": "Ressources",
+    "users": "Utilisateurs"
+  },
+  "picturesField": {
+    "cta": "Faites glisser des images ici ou cliquez pour sélectionner des fichiers à téléverser.",
+    "ctaTouchscreen": "Appuyez pour téléverser une image",
+    "errors": {
+      "rejected": "Votre fichier '{{name}}' a été rejeté. Veuillez sélectionner une image au format .jpg, .png ou .heic faisant moins de 5 MB.",
+      "unknown": "Une erreur inattendue s'est produite. Veuillez réessayer plus tard."
+    }
+  },
+  "confirm": "Confirmer",
+  "cancel": "Annuler",
+  "en": "Anglais",
+  "fr": "Français"
+}

@@ -1,0 +1,26 @@
+{
+  "signIn": {
+    "enterEmailPrompt": "Veuillez entrer votre adresse courriel et nous vous enverrons un lien pour vous connecter.",
+    "verifyEmailPrompt": {
+      "start": "Nous avons envoyé un lien à :",
+      "end": "Cliquez sur le lien pour vous connecter."
+    },
+    "error": {
+      "unexpected": "Une erreur s'est produite. Veuillez réessayer ultérieurement.",
+      "invalidUrl": "Le lien que vous avez suivi est invalide. Veuillez essayer à nouveau."
+    },
+    "form": {
+      "email": {
+        "label": "Adresse courriel",
+        "placeholder": "Entrez votre adresse courriel",
+        "invalid": "Veuillez entrer une adresse courriel valide.",
+        "required": "Ce champ est requis."
+      },
+      "submit": "Se connecter"
+    },
+    "loading": "Veuillez patienter pendant que nous vous connectons...",
+    "title": "Se connecter",
+    "verifyEmail": "Verify your inbox",
+    "welcome": "Bienvenue !"
+  }
+}

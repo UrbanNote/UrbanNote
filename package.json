@@ -1,0 +1,10 @@
+{
+  "scripts": {
+    "dev": "powershell ./dev.ps1",
+    "dev:functions": "cd ./functions && yarn build:watch",
+    "dev:frontend": "cd ./frontend && yarn dev",
+    "emulate": "firebase emulators:start --import ./emulator_data --export-on-exit",
+    "lint": "cd ./frontend && yarn lint && cd ../functions && yarn lint",
+    "test": "cd ./functions && yarn test"
+  }
+}
