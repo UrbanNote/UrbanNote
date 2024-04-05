@@ -16,7 +16,8 @@
     "cta": "Drag and drop some pictures here, or click to select files to upload.",
     "ctaTouchscreen": "Tap to upload a picture",
     "errors": {
-      "rejected": "Your file '{{name}}' was rejected. Please select a valid image file with format .jpg, .png or .heic and a maximum size of 5MB.",
+      "invalidType": "Your file '{{name}}' is not supported. Please select a file with format .gif, .heic, .jpg, .jpeg, or .png",
+      "tooLarge": "Your file '{{name}}' is too large. Please select a file with a maximum size of 25MB.",
       "unknown": "An unexpected error has occured. Please try again later."
     }
   },

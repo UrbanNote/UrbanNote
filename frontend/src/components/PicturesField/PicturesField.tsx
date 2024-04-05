@@ -15,7 +15,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { fadeIn } from '$animations';
 import { Scrollbar } from '$components';
 import { uploadImage } from '$firebase/storage';
-import { convertHeicToJpeg, getFileExtension } from '$helpers';
+import { compressImage, convertHeicToJpeg, getFileExtension } from '$helpers';
 import { useAlerts, useIsTouchscreen } from '$hooks';
 import { useAppSelector } from '$store';
 
@@ -30,7 +30,7 @@ type PicturesFieldProps = {
   setIsUploading?: (isUploading: boolean) => void;
 };
 
-const MAX_SIZE = 1024 * 1024 * 5; // 5MB
+const MAX_SIZE = 25 * 1024 * 1024; // 25MB
 
 // TODO: create single-only variant using prop 'multiple' (or another component)
 function PicturesField<T>({ name, uploadPath, hideWhenNotEmpty, setIsUploading }: PicturesFieldProps) {
@@ -55,15 +55,16 @@ function PicturesField<T>({ name, uploadPath, hideWhenNotEmpty, setIsUploading }
     mutationFn: async (file: File) => {
       try {
         let image = file;
-        // convert heic to jpg if necessary
         if (file.type === 'image/heic') {
           image = await convertHeicToJpeg(file);
         }
 
+        const compressedImage = await compressImage(image, { maxWidthOrHeight: 1600 });
+
         const id = uuidv4();
-        const extension = getFileExtension(image);
+        const extension = getFileExtension(compressedImage);
         const path = `${uploadPath}/${id}.${extension}`;
-        await uploadImage(image, path, userId!);
+        await uploadImage(compressedImage, path, userId!);
         return path;
       } catch (error) {
         // TODO: Handle more known errors
@@ -74,7 +75,13 @@ function PicturesField<T>({ name, uploadPath, hideWhenNotEmpty, setIsUploading }
 
   const handleDrop = async (acceptedFiles: File[], fileRejections: FileRejection[]) => {
     for (const rejection of fileRejections) {
-      alert(t('picturesField.errors.rejected', { name: rejection.file.name }), 'danger');
+      if (rejection.errors.some(error => error.code === 'file-too-large')) {
+        alert(t('picturesField.errors.tooLarge', { name: rejection.file.name }), 'danger');
+      }
+
+      if (rejection.errors.some(error => error.code === 'file-invalid-type')) {
+        alert(t('picturesField.errors.invalidType', { name: rejection.file.name }), 'danger');
+      }
     }
 
     const newValue = value;
