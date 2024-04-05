@@ -1,7 +1,7 @@
-import Alert from 'react-bootstrap/Alert';
 import Spinner from 'react-bootstrap/Spinner';
 import { useTranslation } from 'react-i18next';
 
+import type { ExpenseStatus } from '$firebase/expenses';
 import { ExpenseCategories } from '$firebase/expenses';
 import { useScreenMinWidth } from '$hooks';
 
@@ -18,13 +18,16 @@ const CATEGORIES_ORDER: ExpenseCategories[] = [
 ];
 
 type ViewProps = {
+  isMe: boolean;
   expenses: UseExpensesReturn;
-  onDelete: (id: string) => void;
   onEdit: (id: string) => void;
+  onDelete: (id: string) => void;
+  onStatusChange: (id: string, status: ExpenseStatus) => Promise<void>;
+  onClickViewPictures: (id: string) => void;
 };
 
 // TODO: add table view, filters, search and pagination once expense management is implemented
-function View({ expenses, onDelete, onEdit }: ViewProps) {
+function View({ isMe, expenses, onEdit, onDelete, onStatusChange, onClickViewPictures }: ViewProps) {
   const isAboveMdBreakpoint = useScreenMinWidth('md');
   const { t } = useTranslation('expenses');
 
@@ -32,7 +35,7 @@ function View({ expenses, onDelete, onEdit }: ViewProps) {
 
   if (expenses.loading) return <Spinner />;
 
-  if (!expenses.data?.length) return <p>{t('view.empty')}</p>;
+  if (!expenses.data?.length) return <p>{t(`view.empty.${isMe ? 'me' : 'other'}`)}</p>;
 
   const columns = isAboveMdBreakpoint ? 2 : 1;
 
@@ -46,16 +49,20 @@ function View({ expenses, onDelete, onEdit }: ViewProps) {
 
   return (
     <>
-      <Alert variant="info" dismissible>
-        Notez que la suppression de dépenses et des photos associées ne sera disponible que dans la prochaine version.
-      </Alert>
       <div
         className="Expenses__View d-grid gap-3 gap-md-4"
         style={{
           gridTemplateColumns: `repeat(${columns}, 1fr)`,
         }}>
         {sortedExpenses.map(expense => (
-          <ExpenseCard key={expense.id} expense={expense} onDelete={onDelete} onEdit={onEdit} />
+          <ExpenseCard
+            key={expense.id}
+            expense={expense}
+            onDelete={onDelete}
+            onEdit={onEdit}
+            onStatusChange={onStatusChange}
+            onClickViewPictures={onClickViewPictures}
+          />
         ))}
       </div>
     </>

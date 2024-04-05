@@ -107,8 +107,8 @@ function SignIn() {
                 {!hasOobCode && !hasSentEmail && (
                   <Card key={2}>
                     <Stack direction="vertical" gap={3} className="text-center mb-3 align-items-center">
-                      <div className="shadow rounded-4 p-2 w-fit bg-light">
-                        <img src="/logo.svg" alt="Logo" width={64} />
+                      <div className="shadow w-fit rounded-4">
+                        <img src="/icon.svg" alt="Logo" width={64} />
                       </div>
                       <h1>{t('signIn.welcome')}</h1>
                       <p>{t('signIn.enterEmailPrompt')}</p>
@@ -137,7 +137,10 @@ function SignIn() {
           )}
         </Formik>
       </Container>
-      <img className="fixed-bottom w-100 z-0" src={peaks} alt="Peaks" />
+      <Container fluid className="fixed-bottom z-0 d-flex justify-content-center align-items-end">
+        <p className="text-white z-1">UrbanNote v{process.env.VERSION}</p>
+        <img className="fixed-bottom w-100 z-0" src={peaks} alt="Peaks" />
+      </Container>
     </Container>
   );
 }

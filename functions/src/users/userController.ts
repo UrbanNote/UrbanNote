@@ -23,6 +23,23 @@ export type CreateUserRolesData = {
   userManagement?: boolean;
 };
 
+export type UpdateUserProfileData = {
+  userId?: string;
+  firstName: string;
+  lastName: string;
+  language: string;
+  chosenName?: string;
+  pictureId?: string;
+};
+
+export type UpdateUserRolesData = {
+  userId?: string;
+  admin: boolean;
+  expenseManagement: boolean;
+  resourceManagement: boolean;
+  userManagement: boolean;
+};
+
 const createUserProfileSchema = Joi.object({
   userId: Joi.string().optional(),
   firstName: Joi.string().required(),
@@ -41,6 +58,23 @@ const createUserRolesSchema = Joi.object({
   userManagement: Joi.boolean().optional(),
 });
 
+const updateUserProfileSchema = Joi.object({
+  userId: Joi.string().optional(),
+  firstName: Joi.string().required(),
+  lastName: Joi.string().required(),
+  language: Joi.string().required(),
+  chosenName: Joi.string().optional().allow(''),
+  pictureId: Joi.string().optional().allow(''),
+});
+
+const updateUserRolesSchema = Joi.object({
+  userId: Joi.string().optional(),
+  admin: Joi.boolean().required(),
+  expenseManagement: Joi.boolean().required(),
+  resourceManagement: Joi.boolean().required(),
+  userManagement: Joi.boolean().required(),
+});
+
 /**
  * Controller for the `users` module.
  */
@@ -57,6 +91,18 @@ export interface IUserController {
    * specified, the requester's id is used.
    */
   createUserRoles(data: CreateUserRolesData, context: CallableContext): Promise<void>;
+
+  /**
+   * Updates a user's profile document. Requires `userManagement` role if the requester is different
+   * from the user. If the userId is not specified, the requester's id is used.
+   */
+  updateUserProfile(data: UpdateUserProfileData, context: CallableContext): Promise<void>;
+
+  /**
+   * Updates a user's roles document. Requires `userManagement` role if the requester is different
+   * from the user. If the userId is not specified, the requester's id is used.
+   */
+  updateUserRoles(data: UpdateUserRolesData, context: CallableContext): Promise<void>;
 }
 
 @injectable()
@@ -107,6 +153,55 @@ export class UserController implements IUserController {
         data.expenseManagement ?? false,
         data.resourceManagement ?? false,
         data.userManagement ?? false,
+      );
+    } catch (error) {
+      throw handleError(error);
+    }
+  }
+
+  public async updateUserProfile(data: UpdateUserProfileData, context: CallableContext) {
+    try {
+      if (!context.auth) {
+        throw new ApplicationError('unauthenticated', 'NotAuthenticated');
+      }
+
+      const validationResult = updateUserProfileSchema.validate(data);
+      if (validationResult.error) {
+        throw validationResult.error;
+      }
+
+      await this.userInteractor.updateUserProfile(
+        context.auth.uid,
+        data.userId ?? context.auth.uid,
+        data.firstName,
+        data.lastName,
+        data.language,
+        data.chosenName,
+        data.pictureId,
+      );
+    } catch (error) {
+      throw handleError(error);
+    }
+  }
+
+  public async updateUserRoles(data: UpdateUserRolesData, context: CallableContext) {
+    try {
+      if (!context.auth) {
+        throw new ApplicationError('unauthenticated', 'NotAuthenticated');
+      }
+
+      const validationResult = updateUserRolesSchema.validate(data);
+      if (validationResult.error) {
+        throw validationResult.error;
+      }
+
+      await this.userInteractor.updateUserRoles(
+        context.auth.uid,
+        data.userId ?? context.auth.uid,
+        data.admin,
+        data.expenseManagement,
+        data.resourceManagement,
+        data.userManagement,
       );
     } catch (error) {
       throw handleError(error);

@@ -28,12 +28,21 @@ type PicturesFieldProps = {
   uploadPath: string;
   hideWhenNotEmpty?: boolean;
   setIsUploading?: (isUploading: boolean) => void;
+  onPictureUploaded?: (pictureURL: string) => void;
+  setDeleteFileButtonClicked?: (deleteFileButtonClicked: boolean) => void;
 };
 
 const MAX_SIZE = 25 * 1024 * 1024; // 25MB
 
 // TODO: create single-only variant using prop 'multiple' (or another component)
-function PicturesField<T>({ name, uploadPath, hideWhenNotEmpty, setIsUploading }: PicturesFieldProps) {
+function PicturesField<T>({
+  name,
+  uploadPath,
+  hideWhenNotEmpty,
+  setIsUploading,
+  onPictureUploaded,
+  setDeleteFileButtonClicked,
+}: PicturesFieldProps) {
   const userId = useAppSelector(state => state.user.id);
   const alert = useAlerts();
   const { t } = useTranslation('common');
@@ -65,6 +74,7 @@ function PicturesField<T>({ name, uploadPath, hideWhenNotEmpty, setIsUploading }
         const extension = getFileExtension(compressedImage);
         const path = `${uploadPath}/${id}.${extension}`;
         await uploadImage(compressedImage, path, userId!);
+        onPictureUploaded?.(path);
         return path;
       } catch (error) {
         // TODO: Handle more known errors
@@ -98,6 +108,11 @@ function PicturesField<T>({ name, uploadPath, hideWhenNotEmpty, setIsUploading }
     }
 
     setIsUploading?.(false);
+    setFieldValue(name, newValue);
+  };
+
+  const handleDelete = (file: string) => {
+    const newValue = value.filter(existingPath => existingPath !== file);
     setFieldValue(name, newValue);
   };
 
@@ -146,7 +161,12 @@ function PicturesField<T>({ name, uploadPath, hideWhenNotEmpty, setIsUploading }
                   </motion.div>
                 )}
                 {valueReverse.map(file => (
-                  <Preview key={file} file={file} />
+                  <Preview
+                    key={file}
+                    file={file}
+                    onDelete={() => handleDelete(file)}
+                    setDeleteFileButtonClicked={setDeleteFileButtonClicked}
+                  />
                 ))}
                 {loadingFiles > 0 && Array.from({ length: loadingFiles }).map((_, i) => <Preview key={i} />)}
               </AnimatePresence>

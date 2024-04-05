@@ -1,7 +1,8 @@
+import { httpsCallable } from 'firebase/functions';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import type { UploadMetadata } from 'firebase/storage';
 
-import { storage } from '$firebase';
+import { functions, storage } from '$firebase';
 
 export async function uploadImage(blob: Blob, path: string, userId: string) {
   const storageRef = ref(storage, path);
@@ -18,4 +19,9 @@ export async function uploadImage(blob: Blob, path: string, userId: string) {
 export async function getFileUrl(path: string) {
   const storageRef = ref(storage, path);
   return getDownloadURL(storageRef);
+}
+
+export async function deleteFile(paths: string[]) {
+  const request = httpsCallable<string[], Promise<void>>(functions, 'storage-deleteFile');
+  await request(paths);
 }

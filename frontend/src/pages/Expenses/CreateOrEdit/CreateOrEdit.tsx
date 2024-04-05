@@ -1,16 +1,18 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import { useMutation } from '@tanstack/react-query';
-import type { FormikHelpers } from 'formik';
+import type { FormikHelpers, FormikState } from 'formik';
 import { Formik } from 'formik';
 import Spinner from 'react-bootstrap/Spinner';
 import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
 
 import { SlideOut } from '$components';
-import type { CreateExpenseData, ExpenseDetails, UpdateExpenseData } from '$firebase/expenses';
+import type { GetUserNamesResponse } from '$firebase/auth';
+import type { CreateExpenseData, UpdateExpenseData, ExpenseDetails } from '$firebase/expenses';
 import { ExpenseCategories } from '$firebase/expenses';
 import { createExpense, updateExpense } from '$firebase/expenses';
+import { deleteFile } from '$firebase/storage';
 import { formatDateToString, isFirebaseError, today } from '$helpers';
 import { useAlerts } from '$hooks';
 import { useAppSelector } from '$store';
@@ -19,9 +21,11 @@ import Form from './Form';
 
 type CreateOrEditSlideOutProps = {
   show: boolean;
-  onSubmit?: () => void;
-  setShow: (show: boolean) => void;
+  userNames?: GetUserNamesResponse;
   expenseToEdit?: ExpenseDetails;
+  assignedToId?: string;
+  setShow: (show: boolean) => void;
+  onSubmit?: () => void;
 };
 
 export type CreateOrEditExpenseFormValues = {
@@ -34,13 +38,31 @@ export type CreateOrEditExpenseFormValues = {
   category: ExpenseCategories;
 };
 
+const getEmptyValues = (assignedToId: string): CreateOrEditExpenseFormValues => ({
+  assignedToId,
+  title: '',
+  description: '',
+  date: today(),
+  amount: 0,
+  pictureURL: [],
+  category: ExpenseCategories.TRAVEL,
+});
+
 // TODO: can't edit if older than 1 year
-// TODO: when cancelling, delete the pictures that were uploaded but not used
-function CreateOrEditSlideOut({ show, expenseToEdit, onSubmit, setShow }: CreateOrEditSlideOutProps) {
+function CreateOrEditSlideOut({
+  show,
+  userNames,
+  assignedToId,
+  expenseToEdit,
+  setShow,
+  onSubmit,
+}: CreateOrEditSlideOutProps) {
   const { t } = useTranslation('expenses');
   const userId = useAppSelector(state => state.user.id);
   const [isUploading, setIsUploading] = useState(false);
   const alert = useAlerts();
+  const [uploadedPictures, setUploadedPictures] = useState<string[]>([]);
+  const [ExpenseToEditchanged, setExpenseToEditchanged] = useState(0); //pour que le useMemo de initialValues soit recalculé
 
   const mode = expenseToEdit ? 'edit' : 'create';
 
@@ -66,11 +88,14 @@ function CreateOrEditSlideOut({ show, expenseToEdit, onSubmit, setShow }: Create
           updates: { ...rest, date: formatDateToString(date) },
         });
       }
-
+      const pictureToDelete = uploadedPictures.filter(picture => !values.pictureURL.includes(picture));
+      setUploadedPictures([]);
+      deleteFile(pictureToDelete);
       alert(t(`${mode}.success`), 'success');
       onSubmit?.();
       setShow(false);
       helpers.resetForm();
+      setExpenseToEditchanged(oldSubmit => oldSubmit + 1);
     } catch (error) {
       if (isFirebaseError(error)) {
         return alert(t(`${mode}.errors.${error.message}`), 'danger');
@@ -80,33 +105,48 @@ function CreateOrEditSlideOut({ show, expenseToEdit, onSubmit, setShow }: Create
     }
   };
 
+  const handlePictureUploaded = (pictureURL: string) => {
+    setUploadedPictures([...uploadedPictures, pictureURL]);
+  };
+
   const createOrEditExpenseSchema = Yup.object({
     title: Yup.string().required(t('createOrEdit.fields.title.required')),
     description: Yup.string(),
     date: Yup.date().required(t('createOrEdit.fields.date.required')),
     amount: Yup.number()
       .required(t('createOrEdit.fields.amount.required'))
-      .min(0.01, t('createOrEdit.fields.amount.min')),
+      .min(0.01, t('createOrEdit.fields.amount.min'))
+      .max(100000, t('createOrEdit.fields.amount.max')),
   });
 
-  const emptyValues: CreateOrEditExpenseFormValues = {
-    assignedToId: userId!,
-    title: '',
-    description: '',
-    date: today(),
-    amount: 0,
-    pictureURL: [],
-    category: ExpenseCategories.TRAVEL,
-  };
+  const initialValues = useMemo(
+    () =>
+      expenseToEdit
+        ? {
+            assignedToId: expenseToEdit.assignedToId || userId!,
+            title: expenseToEdit.title || '',
+            description: expenseToEdit.description || '',
+            date: new Date(expenseToEdit.date),
+            amount: expenseToEdit.amount || 0,
+            pictureURL: expenseToEdit.pictureURL ? [...expenseToEdit.pictureURL] : [],
+            category: expenseToEdit.category,
+          }
+        : getEmptyValues(assignedToId || userId!),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [userId, assignedToId, expenseToEdit, ExpenseToEditchanged],
+  );
 
-  const initialValues: CreateOrEditExpenseFormValues = {
-    assignedToId: expenseToEdit?.assignedToId || userId!,
-    title: expenseToEdit?.title || '',
-    description: expenseToEdit?.description || '',
-    date: expenseToEdit ? new Date(expenseToEdit.date) : today(),
-    amount: expenseToEdit?.amount || 0,
-    pictureURL: expenseToEdit?.pictureURL || [],
-    category: expenseToEdit?.category || ExpenseCategories.TRAVEL,
+  const handleCancel = (
+    resetForm: (nextState?: Partial<FormikState<CreateOrEditExpenseFormValues>> | undefined) => void,
+    userId: string,
+  ) => {
+    const pictureToDelete = uploadedPictures.filter(picture => !expenseToEdit?.pictureURL?.includes(picture));
+    resetForm({ values: getEmptyValues(userId) });
+    setUploadedPictures([]);
+    setExpenseToEditchanged(oldCancel => oldCancel + 1);
+    if (pictureToDelete.length > 0) {
+      deleteFile(pictureToDelete);
+    }
   };
 
   return (
@@ -114,15 +154,25 @@ function CreateOrEditSlideOut({ show, expenseToEdit, onSubmit, setShow }: Create
       initialValues={initialValues}
       validationSchema={createOrEditExpenseSchema}
       onSubmit={handleSubmit}>
-      {({ errors, isSubmitting, handleSubmit, resetForm }) => (
-        <SlideOut show={show} setShow={setShow} onCancel={() => resetForm({ values: emptyValues })}>
+      {({ isValid, dirty, isSubmitting, handleSubmit, resetForm }) => (
+        <SlideOut show={show} setShow={setShow} onCancel={() => handleCancel(resetForm, userId!)}>
           <SlideOut.Header title={t(`${mode}.title`)} closeBtn />
           <SlideOut.Body>
-            <Form expenseToEdit={expenseToEdit} setIsUploading={setIsUploading} />
+            <Form
+              userNames={userNames}
+              assignedToId={assignedToId}
+              expenseToEdit={expenseToEdit}
+              initialValues={initialValues}
+              setIsUploading={setIsUploading}
+              onPictureUploaded={handlePictureUploaded}
+            />
           </SlideOut.Body>
           <SlideOut.Footer
             confirmLabel={isSubmitting ? <Spinner size="sm" /> : t(`${mode}.confirm`)}
-            confirmProps={{ disabled: isUploading || isSubmitting || Boolean(errors.amount), onClick: handleSubmit }}
+            confirmProps={{
+              disabled: isUploading || isSubmitting || !isValid || !dirty,
+              onClick: handleSubmit,
+            }}
           />
         </SlideOut>
       )}

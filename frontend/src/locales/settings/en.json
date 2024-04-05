@@ -1,3 +1,37 @@
 {
-  "title": "Settings"
+  "title": "Settings",
+  "success": "Your settings have been saved.",
+  "confirm": "Save",
+  "errors": {
+    "permissionDenied": "You do not have permission to edit these settings",
+    "userProfileNotFound": "An error has occured while retrieving your profile. Please try again later.",
+    "unexpected": "An unexpected error occurred. Please try again later."
+  },
+  "fields": {
+    "email": {
+      "label": "Email address",
+      "helpText": "You cannot change your email address."
+    },
+    "firstName": {
+      "label": "First Name",
+      "placeholder": "Enter your first name",
+      "required": "Please enter your first name."
+    },
+    "lastName": {
+      "label": "Last Name",
+      "placeholder": "Enter your last name",
+      "required": "Please enter your last name."
+    },
+    "chosenName": {
+      "label": "Chosen Name",
+      "placeholder": "Enter your chosen name",
+      "helpText": "This is the first name that will be displayed to other users."
+    },
+    "language": {
+      "label": "Language",
+      "required": "Please select a language."
+    }
+  },
+  "profile": "My Profile",
+  "contactInfo": "Contact Information"
 }

@@ -1,4 +1,9 @@
 {
+  "appDataSubscription": {
+    "errors": {
+      "unknown": "An unexpected error has occured while fetching your data. Please try again later."
+    }
+  },
   "settings": "Settings",
   "signOut": "Sign Out",
   "signIn": {
@@ -24,5 +29,5 @@
   "confirm": "Confirm",
   "cancel": "Cancel",
   "en": "English",
-  "fr": "French"
+  "fr": "Français"
 }

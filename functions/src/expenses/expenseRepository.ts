@@ -28,6 +28,10 @@ export interface IExpenseRepository {
   ): Promise<void>;
 
   getListExpenseDetails(ipp: number): Promise<ExpenseDetailsDoc[]>;
+
+  deleteExpenseDetailsById(expenseId: string): Promise<void>;
+
+  deleteAllExpenseDetails(assignedToId: string): Promise<void>;
 }
 
 @injectable()
@@ -90,5 +94,15 @@ export class ExpenseRepository implements IExpenseRepository {
     const query = this.expenseDetailsCollection.orderBy('createdAt').limit(ipp);
     const expenseDetailsDocs = await query.get();
     return expenseDetailsDocs.docs.map(doc => doc.data() as ExpenseDetailsDoc);
+  }
+
+  public async deleteExpenseDetailsById(expenseId: string) {
+    await this.expenseDetailsCollection.doc(expenseId).delete();
+  }
+
+  public async deleteAllExpenseDetails(assignedToId: string) {
+    const query = this.expenseDetailsCollection.where('assignedToId', '==', assignedToId);
+    const expenseDetailsDocs = await query.get();
+    expenseDetailsDocs.docs.forEach(doc => doc.ref.delete());
   }
 }

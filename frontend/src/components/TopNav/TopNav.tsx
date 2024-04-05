@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import classNames from 'classnames';
 import Button from 'react-bootstrap/Button';
 import Dropdown from 'react-bootstrap/Dropdown';
@@ -8,6 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import { Avatar } from '$components';
+import SettingsSlideOut from '$components/SettingsSlideOut';
 import { signOut } from '$firebase/auth';
 import { getUsualName } from '$helpers';
 import { useAppLayout } from '$hooks';
@@ -19,8 +22,8 @@ function TopNav() {
   const page = useAppSelector(state => state.page);
   const profile = useAppSelector(state => state.user.profile);
   const { t } = useTranslation('common');
+  const [showSettingsSlideOut, setShowSettingsSlideOut] = useState(false);
   const isLayoutHorizontal = useAppLayout('horizontal');
-
   const navTitle = page.titleShort || page.title;
 
   return (
@@ -62,7 +65,7 @@ function TopNav() {
           />
           <Dropdown.Menu variant="secondary" align="end">
             <Dropdown.Header>{getUsualName(profile)}</Dropdown.Header>
-            <Dropdown.Item as={Link} to="settings">
+            <Dropdown.Item as={Button} onClick={() => setShowSettingsSlideOut(true)}>
               {t('settings')}
             </Dropdown.Item>
             <Dropdown.Item as={Button} onClick={signOut}>
@@ -71,6 +74,7 @@ function TopNav() {
           </Dropdown.Menu>
         </Dropdown>
       </Stack>
+      <SettingsSlideOut show={showSettingsSlideOut} setShow={setShowSettingsSlideOut} />
     </Navbar>
   );
 }

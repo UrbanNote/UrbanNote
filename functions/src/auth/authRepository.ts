@@ -7,9 +7,18 @@ import { injectable } from 'tsyringe';
  * Connects the application to its auth data source.
  */
 export interface IAuthRepository {
-  createAuthUser(email: string): Promise<UserRecord>;
+  createAuthUser(
+    requesterId: string,
+    email: string,
+    displayName: string,
+    disabled: boolean,
+    emailVerified?: boolean,
+  ): Promise<UserRecord>;
 
-  updateAuthUser(id: string, updates: Partial<Pick<UserRecord, 'disabled'>>): Promise<void>;
+  updateAuthUser(
+    id: string,
+    updates: Partial<Pick<UserRecord, 'disabled' | 'displayName' | 'emailVerified'>>,
+  ): Promise<void>;
 
   getAuthUserByEmail(email: string): Promise<UserRecord | null>;
 
@@ -24,13 +33,24 @@ export interface IAuthRepository {
 
 @injectable()
 export class AuthRepository implements IAuthRepository {
-  public async createAuthUser(email: string): Promise<UserRecord> {
-    return auth().createUser({ email });
+  public async createAuthUser(
+    requesterId: string,
+    email: string,
+    displayName: string,
+    disabled: boolean,
+    emailVerified?: boolean,
+  ): Promise<UserRecord> {
+    return auth().createUser({ email, displayName, disabled, emailVerified });
   }
 
-  public async updateAuthUser(id: string, updates: Partial<Pick<UserRecord, 'disabled'>>): Promise<void> {
+  public async updateAuthUser(
+    id: string,
+    updates: Partial<Pick<UserRecord, 'disabled' | 'displayName' | 'emailVerified'>>,
+  ): Promise<void> {
     await auth().updateUser(id, {
       ...(updates.disabled !== undefined && { disabled: updates.disabled }),
+      ...(updates.displayName !== undefined && { displayName: updates.displayName }),
+      ...(updates.emailVerified !== undefined && { emailVerified: updates.emailVerified }),
     });
   }
 

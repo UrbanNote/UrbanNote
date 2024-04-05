@@ -1,4 +1,5 @@
 {
+  "version": "1.1.0",
   "scripts": {
     "dev": "powershell ./dev.ps1",
     "dev:functions": "cd ./functions && yarn build:watch",

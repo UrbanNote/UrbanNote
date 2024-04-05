@@ -3,16 +3,21 @@ import Joi from 'joi';
 import { inject, injectable } from 'tsyringe';
 
 import { IAuthInteractor } from './authInteractor';
+import { AuthUserDetails } from './authUserDetails';
 import { UserDetails } from './userDetails';
+import { UserWithName } from './userWithName';
 import { ApplicationError, handleError } from '../errors';
 import { IUserInteractor } from '../users/userInteractor';
 
 export type CreateUserData = {
-  email: string;
   firstName: string;
   lastName: string;
+  email: string;
+  emailVerified?: boolean;
   language: string;
   chosenName?: string;
+  pictureId?: string;
+  disabled: boolean;
   admin?: boolean;
   expenseManagement?: boolean;
   resourceManagement?: boolean;
@@ -33,6 +38,12 @@ export type GetUsersData = {
 
   /** The next page token. If not specified, returns users starting without any offset. */
   pageToken?: string;
+
+  /** The disabled filter result. If not specified, return all users. */
+  disabledFilter?: boolean;
+
+  /** The search bar filter. If not specified, return all users. */
+  searchBarFilter?: string;
 };
 
 export type GetUsersResponse = {
@@ -42,12 +53,23 @@ export type GetUsersResponse = {
   pageToken?: string;
 };
 
+export type GetUserNamesResponse = UserWithName[];
+
+export type GetAuthUsersResponse = {
+  users: AuthUserDetails[];
+
+  /** The next page token. If not specified, returns users starting without any offset. */
+  pageToken?: string;
+};
+
 const createUserSchema = Joi.object({
   email: Joi.string().email().required(),
+  emailVerified: Joi.boolean().optional(),
   firstName: Joi.string().required(),
   lastName: Joi.string().required(),
   language: Joi.string().required(),
   chosenName: Joi.string().optional().allow(''),
+  disabled: Joi.boolean().required(),
   admin: Joi.boolean().optional(),
   expenseManagement: Joi.boolean().optional(),
   resourceManagement: Joi.boolean().optional(),
@@ -64,6 +86,11 @@ export interface IAuthController {
   createUser(data: CreateUserData, context: CallableContext): Promise<void>;
 
   /**
+   * Updates an Auth user in the Auth provider.
+   */
+  updateUser(data: AuthUserDetails, context: CallableContext): Promise<void>;
+
+  /**
    * Disables an Auth user in the Auth provider. A disabled user cannot sign in.
    */
   disableUser(data: DisableUserData, context: CallableContext): Promise<void>;
@@ -77,6 +104,16 @@ export interface IAuthController {
    * Gets a list of users and their details.
    */
   getUsers(data: GetUsersData, context: CallableContext): Promise<GetUsersResponse>;
+
+  /**
+   * Gets a list of user's id and names.
+   */
+  getUserNames(data: object, context: CallableContext): Promise<GetUserNamesResponse>;
+
+  /**
+   * Gets a list of auth users and their details.
+   */
+  getAuthUsers(data: GetUsersData, context: CallableContext): Promise<GetAuthUsersResponse>;
 }
 
 @injectable()
@@ -97,7 +134,25 @@ export class AuthController implements IAuthController {
         throw validationResult.error;
       }
 
-      const authUser = await this.authInteractor.createAuthUser(context.auth.uid, data.email);
+      const displayName = data.firstName + ' ' + data.lastName;
+
+      const authUser = await this.authInteractor.createAuthUser(
+        context.auth.uid,
+        data.email,
+        displayName,
+        !data.disabled,
+        data.admin ?? false,
+        data.emailVerified,
+      );
+      await this.userInteractor.createUserRoles(
+        context.auth.uid,
+        authUser.uid,
+        Boolean(data.admin),
+        Boolean(data.expenseManagement),
+        Boolean(data.resourceManagement),
+        Boolean(data.userManagement),
+      );
+
       await this.userInteractor.createUserProfile(
         context.auth.uid,
         authUser.uid,
@@ -107,14 +162,23 @@ export class AuthController implements IAuthController {
         data.language,
         data.chosenName,
       );
+    } catch (error) {
+      throw handleError(error);
+    }
+  }
 
-      await this.userInteractor.createUserRoles(
+  public async updateUser(data: AuthUserDetails, context: CallableContext): Promise<void> {
+    try {
+      if (!context.auth) {
+        throw new ApplicationError('unauthenticated', 'Unauthenticated');
+      }
+
+      await this.authInteractor.updateAuthUser(
         context.auth.uid,
-        authUser.uid,
-        Boolean(data.admin),
-        Boolean(data.expenseManagement),
-        Boolean(data.resourceManagement),
-        Boolean(data.userManagement),
+        data.disabled,
+        data.email,
+        data.displayName,
+        data.emailVerified,
       );
     } catch (error) {
       throw handleError(error);
@@ -152,6 +216,41 @@ export class AuthController implements IAuthController {
       }
 
       const [users, pageToken] = await this.authInteractor.getUsers(context.auth.uid, data.ipp, data.pageToken);
+      return { users, pageToken };
+    } catch (error) {
+      throw handleError(error);
+    }
+  }
+
+  public async getUserNames(data: object, context: CallableContext): Promise<GetUserNamesResponse> {
+    try {
+      if (!context.auth) {
+        throw new ApplicationError('unauthenticated', 'Unauthenticated');
+      }
+
+      const userNames = await this.authInteractor.getUserNames();
+      return userNames;
+    } catch (error) {
+      throw handleError(error);
+    }
+  }
+
+  public async getAuthUsers(data: GetUsersData, context: CallableContext): Promise<GetAuthUsersResponse> {
+    try {
+      if (!context.auth) {
+        throw new ApplicationError('unauthenticated', 'Unauthenticated');
+      }
+
+      const [users, pageToken] = await this.authInteractor.getAuthUsers(
+        context.auth.uid,
+        data.ipp,
+        data.pageToken,
+        data.disabledFilter,
+        data.searchBarFilter
+          ?.toLowerCase() // Met la string en LowerCase
+          .normalize('NFD') // Décompose les caractères avec accent
+          .replace(/[\u0300-\u036f\-\s]/g, ''), // Remplace les accents, les tirets et les espaces par un string vide
+      );
       return { users, pageToken };
     } catch (error) {
       throw handleError(error);

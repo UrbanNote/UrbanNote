@@ -2,7 +2,7 @@ import type { BaseEntity } from '../baseEntity';
 
 export enum ExpenseStatus {
   ARCHIVED = 'archived',
-  ACCEPTED = 'accepted',
+  APPROVED = 'approved',
   REJECTED = 'rejected',
   PENDING = 'pending',
 }

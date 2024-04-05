@@ -9,7 +9,11 @@ import AppRouter from '$router';
 function App() {
   const [authReady, setAuthReady] = useState(false);
 
-  useAppDataSubscription(() => setTimeout(() => setAuthReady(true), 1000));
+  useAppDataSubscription(
+    () => setAuthReady(false),
+    // slight delay so the user's data has time to be pushed to redux
+    () => setTimeout(() => setAuthReady(true), 1000),
+  );
 
   return (
     <>

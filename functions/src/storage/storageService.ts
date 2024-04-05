@@ -13,6 +13,12 @@ export interface IStorageService {
    * @param entityId The ID of the expense to associate the file with.
    */
   associateFileToEntity(path: string, entityType: EntityTypes, expenseId: string): Promise<void>;
+
+  /**
+   * Delete file associated with an expense.
+   * @param path The path to the file.
+   */
+  deleteFile(path: string[]): Promise<void>;
 }
 
 @injectable()
@@ -29,5 +35,14 @@ export class StorageService implements IStorageService {
     };
 
     await this.storageRepository.setMetadata(path, metadata);
+  }
+
+  public async deleteFile(paths: string[]) {
+    for (const path of paths) {
+      const file = await this.storageRepository.getFile(path);
+      if (!file) throw new ApplicationError('not-found', 'FileNotFound');
+
+      await this.storageRepository.deleteFile(path);
+    }
   }
 }

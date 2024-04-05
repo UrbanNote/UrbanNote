@@ -1,5 +1,5 @@
 {
-  "include": [".eslintrc.cjs", "jest.config.js", "tests"],
+  "include": [".eslintrc.cjs", "jest.config.ts", "tests"],
   "compilerOptions": {
     "types": ["jest", "node"]
   }

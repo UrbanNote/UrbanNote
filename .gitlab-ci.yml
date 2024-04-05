@@ -5,7 +5,7 @@ stages:
   - deploy
 
 variables:
-  NODE_VERSION: '18.16.0'
+  NODE_VERSION: "18.16.0"
 
 cache:
   paths:
@@ -29,6 +29,9 @@ integration:
 
 deploy_dev:
   stage: deploy
+  before_script:
+    - echo -n $GOOGLE_APPLICATION_CREDENTIALS_BASE64 | base64 -d > private-key.json
+    - export GOOGLE_APPLICATION_CREDENTIALS="private-key.json"
   script:
     - cd ./frontend && echo "" > .env
     - echo "VITE_APP_PUBLIC_URL=$VITE_APP_PUBLIC_URL" >> .env
@@ -43,27 +46,6 @@ deploy_dev:
     - yarn build
     - cd ../
     - yarn global add firebase-tools
-    - firebase deploy --token $FIREBASE_TOKEN --project default
+    - firebase deploy --project default
   only:
     - main
-# ! Deactivated until it works
-# deploy_cstr:
-#   stage: deploy
-#   script:
-#     - cd ./frontend && echo "" > .env
-#     - echo "" > .env.local
-#     - echo "" > .env.local.example
-#     - echo "VITE_APP_PUBLIC_URL=$CSTR_VITE_APP_PUBLIC_URL" >> .env
-#     - echo "VITE_FIREBASE_API_KEY=$CSTR_VITE_FIREBASE_API_KEY" >> .env
-#     - echo "VITE_FIREBASE_AUTH_DOMAIN=$CSTR_VITE_FIREBASE_AUTH_DOMAIN" >> .env
-#     - echo "VITE_FIREBASE_PROJECT_ID=$CSTR_VITE_FIREBASE_PROJECT_ID" >> .env
-#     - echo "VITE_FIREBASE_STORAGE_BUCKET=$CSTR_VITE_FIREBASE_STORAGE_BUCKET" >> .env
-#     - echo "VITE_FIREBASE_MESSAGING_SENDER_ID=$CSTR_VITE_FIREBASE_MESSAGING_SENDER_ID" >> .env
-#     - echo "VITE_FIREBASE_APP_ID=$CSTR_VITE_FIREBASE_APP_ID" >> .env
-#     - yarn install
-#     - yarn build
-#     - cd ../
-#     - yarn global add firebase-tools
-#     - firebase deploy --token $FIREBASE_TOKEN --project cstr
-#   only:
-#     - release/cstr

@@ -2,14 +2,17 @@ import { httpsCallable } from '@firebase/functions';
 import { sendSignInLinkToEmail, signInWithEmailLink } from 'firebase/auth';
 
 import { auth, functions } from '$firebase';
+import type { AuthUserDetails } from '$pages/Users/Users';
 
 export type CreateUserData = {
   firstName: string;
   lastName: string;
   email: string;
+  emailVerified?: boolean;
   language: string;
   chosenName?: string;
   pictureId?: string;
+  disabled: boolean;
   admin?: boolean;
   expenseManagement?: boolean;
   resourceManagement?: boolean;
@@ -19,6 +22,8 @@ export type CreateUserData = {
 export type GetUsersData = {
   ipp: number;
   pageToken?: string;
+  disabledFilter?: boolean;
+  searchBarFilter?: string;
 };
 
 export type GetUsersResponse = {
@@ -44,14 +49,64 @@ export type GetUsersResponse = {
   pageToken?: string;
 };
 
+export type GetAuthUsersResponse = {
+  users: {
+    uid: string;
+    disabled: boolean;
+    displayName: string;
+    email: string;
+    emailVerified: boolean;
+  }[];
+};
+
+export type GetUserNamesResponse = {
+  id: string;
+  name: string;
+}[];
+
+export type DisableUserData = {
+  id: string;
+};
+
+export type EnableUserData = {
+  id: string;
+};
+
 export async function getUsers(data: GetUsersData): Promise<GetUsersResponse> {
   const request = httpsCallable<GetUsersData, GetUsersResponse>(functions, 'auth-getUsers');
   const response = await request(data);
   return response.data;
 }
 
+export async function getUserNames(): Promise<GetUserNamesResponse> {
+  const request = httpsCallable<object, GetUserNamesResponse>(functions, 'auth-getUserNames');
+  const response = await request({});
+  return response.data;
+}
+
+export async function getAuthUsers(data: GetUsersData): Promise<GetAuthUsersResponse> {
+  const request = httpsCallable<GetUsersData, GetAuthUsersResponse>(functions, 'auth-getAuthUsers');
+  const response = await request(data);
+  return response.data;
+}
+
 export async function createUser(input: CreateUserData) {
   const request = httpsCallable<CreateUserData, Promise<void>>(functions, 'auth-createUser');
+  await request(input);
+}
+
+export async function updateUser(input: AuthUserDetails) {
+  const request = httpsCallable<AuthUserDetails, Promise<void>>(functions, 'auth-updateUser');
+  await request(input);
+}
+
+export async function disableUser(input: DisableUserData) {
+  const request = httpsCallable<DisableUserData, Promise<void>>(functions, 'auth-disableUser');
+  await request(input);
+}
+
+export async function enableUser(input: EnableUserData) {
+  const request = httpsCallable<EnableUserData, Promise<void>>(functions, 'auth-enableUser');
   await request(input);
 }
 

@@ -1,8 +1,12 @@
 {
   "title": "Dépenses",
   "actions": {
+    "archive": "Archiver",
+    "approve": "Approuver",
     "delete": "Supprimer",
-    "edit": "Modifier"
+    "edit": "Modifier",
+    "reject": "Refuser",
+    "restore": "Restaurer"
   },
   "create": {
     "confirm": "Créer",
@@ -29,6 +33,9 @@
   },
   "createOrEdit": {
     "fields": {
+      "assignedToId": {
+        "label": "Utilisateur"
+      },
       "category": {
         "label": "Catégorie"
       },
@@ -44,21 +51,39 @@
       "amount": {
         "label": "Montant",
         "required": "Veuillez entrer un montant.",
-        "min": "Veuillez entrer un montant supérieur à 0.00$."
+        "min": "Veuillez entrer un montant supérieur à 0.00$.",
+        "max": "Veuillez entrer un montant inférieur à 100 000.00$."
       },
       "date": {
         "label": "Date",
         "required": "Veuillez entrer une date."
       },
       "pictureURL": {
-        "label": "Photos"
+        "label": "Photos",
+        "info": "Pour effacer la photo de façon permanente, il est nécessaire de sauvegarder."
       }
     }
   },
   "delete": {
     "title": "Êtes-vous sûr?",
     "message": "Voulez-vous vraiment supprimer cette dépense? Cette action est irréversible.",
-    "confirm": "Supprimer"
+    "confirm": "Supprimer",
+    "success": "La dépense a été supprimée avec succès.",
+    "errors": {
+      "expenseNotFound": "La dépense que vous tentez de modifier n'existe pas.",
+      "permissionDenied": "Vous n'avez pas la permission d'effectuer cette action.",
+      "unexpected": "Une erreur inattendue est survenue. Veuillez réessayer plus tard."
+    }
+  },
+  "filters": {
+    "assignedToId": "Utilisateur",
+    "difference": "Période",
+    "submit": "Appliquer",
+    "me": "moi",
+    "status": {
+      "label": "Statut",
+      "all": "Voir tout"
+    }
   },
   "categories": {
     "travel": "Déplacement",
@@ -76,8 +101,35 @@
   },
   "view": {
     "error": "Une erreur inattendue s'est produite lors du chargement des dépenses. Veuillez réessayer plus tard.",
-    "empty": "Vous n'avez présentement aucune dépense en attente d'approbation."
+    "empty": {
+      "me": "Vous n'avez aucune dépense pour les filtres sélectionnés.",
+      "other": "Cet utilisateur n'a aucune dépense pour les filtres sélectionnés."
+    }
+  },
+  "useExpenses": {
+    "errors": {
+      "unknown": "Une erreur inattendue s'est produite. Veuillez réessayer plus tard."
+    }
   },
   "picture": "photo",
-  "pictures": "photos"
+  "pictures": "photos",
+  "picturesModal": {
+    "title": "Photos de {{title}}",
+    "previous": "< Précédente",
+    "next": "Suivante >",
+    "index": "Photo {{index}} de {{total}}"
+  },
+  "updateStatus": {
+    "errors": {
+      "expenseNotFound": "La dépense que vous tentez de modifier n'existe pas.",
+      "permissionDenied": "Vous n'avez pas la permission d'effectuer cette action.",
+      "unexpected": "Une erreur inattendue est survenue. Veuillez réessayer plus tard."
+    },
+    "success": {
+      "archived": "La dépense a été archivée avec succès",
+      "approved": "La dépense a été approuvée avec succès.",
+      "rejected": "La dépense a été refusée avec succès.",
+      "pending": "La dépense a été restaurée avec succès"
+    }
+  }
 }

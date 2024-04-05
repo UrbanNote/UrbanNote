@@ -7,7 +7,7 @@ import './Splash.scss';
 export function Splash() {
   return (
     <motion.div className="Splash bg-light text-center" {...fadeOut} transition={{ duration: 0.6 }}>
-      <img src="/logo.svg" />
+      <img src="/icon.svg" />
     </motion.div>
   );
 }

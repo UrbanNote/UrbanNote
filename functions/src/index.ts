@@ -8,6 +8,7 @@ firestore().settings({ ignoreUndefinedProperties: true });
 
 import auth from './auth';
 import expenses from './expenses';
+import storage from './storage';
 import users from './users';
 
-export { auth, users, expenses };
+export { auth, users, expenses, storage };

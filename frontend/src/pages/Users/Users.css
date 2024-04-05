@@ -1,0 +1,96 @@
+.title {
+    font-weight: bold;
+}
+
+.component {
+    margin-left: 1em;
+}
+
+.asterisque {
+    color: red;
+}
+
+.users-header {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1em;
+}
+
+.filters-form {
+    display: flex;
+    padding-top: 1em;
+    padding-bottom: 2em;
+}
+
+.filters-group {
+    display: flex;
+}
+
+.search-bar {
+    width: 40em;
+}
+
+.filter-dropdown {
+    margin-right: 2em;
+    margin-left: 2em;
+}
+
+.apply-button {
+    margin-right: 2em;
+}
+
+.three-dots-column {
+    width: 5em;
+}
+
+.last-name-column {
+    width: 30em;
+}
+
+.first-name-column {
+    width: 30em;
+}
+
+.email-column {
+    width: -10em;
+}
+
+.slide-out-form {
+    min-width: 100%;
+    margin-top: 1.5em;
+}
+
+.dropdown-toggle::after {
+    display: none !important; 
+}
+
+.dots-dropdown {
+    margin-right: 0.5em;
+}
+
+.checkbox-field {
+    margin-right: 0.5em;
+    margin-left: 0.5em;
+}
+
+.checkbox-form {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1em;
+}
+
+.email-text {
+    margin-left: 0.5em;
+}
+
+.tabs {
+    position: fixed;
+    background-color: white;
+}
+
+.tab-form {
+    max-height: 750px;
+    padding-top: 10px;
+}
+
+

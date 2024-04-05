@@ -1,3 +1,101 @@
 {
-  "title": "Users"
+  "title": "Users",
+  "createUsers": "Create a user",
+  "applyFilters": "Apply",
+  "resetFilters": "Reset filters",
+  "noUsersFilter": "No user matches your search.", 
+  "create": "Create",
+  "search": "Search",
+  "status": {
+      "status": "Status",
+      "all": "All",
+      "enabled": "Enabled",
+      "disabled": "Disabled"
+  },
+  "dots": {
+    "overview": "Overview",
+    "update": "Update",
+    "disable": "Disable",
+    "enable": "Enable"
+  },
+    "save": "Save",
+    "requiredFields": "Required fields are marked with an asterisk",
+    "yes": "Yes",
+    "no": "No",
+    "profile": {
+        "enabled": "Enabled",
+        "email": "Email",
+        "emailVerified": "Email verified",
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "chosenName": "Chosen Name - optional",
+        "language": "Language"
+    },
+    "role": {
+        "admin": "Admin",
+        "expenseManagement": "Expense Management",
+        "resourceManagement": "Resource Management",
+        "userManagement": "User Management"
+    },
+    "slideOut": {
+      "slideOutTabs": {
+        "accountAccess": "Account and access",
+        "userProfile": "User profile"
+      },
+      "accountInfo": "Account information",
+      "emailForm": "Enter an email address",
+      "emailModified": "Cannot be modified",
+      "enableCheckbox": "Enable - Can connect to the platform",
+      "emailToBeVerified": "Must confirm their email address before being able to log in",
+      "accessManagement": "Access management",
+      "createThisUser": "Create user",
+      "updateThisUser": "Save changes",
+      "firstNameForm": "Enter a first name",
+      "lastNameForm": "Enter a last name",
+      "chosenNameForm": "Enter a chosen name",
+      "tooltip": {
+        "adminRole": "Super user. Has the permissions of all other roles and can promote other administrators.",
+        "expenseRole": "Allows you to view, edit, approve, delete all expenses, as well as create expenses for other users.",
+        "resourceRole": "Allows you to modify and delete other users' resources.",
+        "userRole": "Allows you to create, modify, delete user accounts, as well as modify roles and profile information for these users."
+      }
+    },
+    "table": {
+      "displayName": "Name"
+    },
+    "createUser": {
+      "errors": {
+        "UserAlreadyExists": "The user you are trying to create already exists.",
+        "UserProfileAlreadyExists": "The user you are trying to create already exists.",
+        "EmailAlreadyTaken": "The email address is already taken.",
+        "UserRolesAlreadyExist": "The user you are trying to create already exists.",
+        "unexpected": "An unexpected error has occured. Please try again later.",
+        "invalidArgument": "The email address is wrong. Please try again."
+      },
+      "success": "The user has been created successfully.",
+      "confirm": "Create user"
+    },
+    "editUser": {
+      "errors": {
+        "UserNotFound": "The user you are trying to edit does not exist.",
+        "unexpected": "An unexpected error has occured. Please try again later."
+      },
+      "success": "The user has been saved successfully.",
+      "confirm": "Save changes",
+      "statusChangedSuccess": "The user status has been changed successfully."
+    },
+    "createOrEdit": {
+      "fields": {
+        "email": {
+          "required": "Please enter a email address.",
+          "valid": "Please enter a valid email address (test@test.com)."
+        },
+        "firstName": {
+          "required": "Please enter a firstname."
+        },
+        "lastName": {
+          "required": "Please enter a lastname."
+        }
+      }
+    } 
 }

@@ -1,0 +1,14 @@
+{
+  "version.label": {
+    "message": "Next",
+    "description": "The label for version current"
+  },
+  "sidebar.tutorialSidebar.category.Installation guide": {
+    "message": "Guide d'installation",
+    "description": "The label for category Installation guide in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Installation guide.link.generated-index.description": {
+    "message": "🚀 Apprenez comment installer et configurer UrbanNote.",
+    "description": "The generated-index page description for category Installation guide in sidebar tutorialSidebar"
+  }
+}

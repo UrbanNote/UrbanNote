@@ -8,6 +8,7 @@ import { IExpenseController, ExpenseController } from './expenses/expenseControl
 import { IExpenseInteractor, ExpenseInteractor } from './expenses/expenseInteractor';
 import { IExpenseObserver, ExpenseObserver } from './expenses/expenseObserver';
 import { IExpenseRepository, ExpenseRepository } from './expenses/expenseRepository';
+import { IStorageController, StorageController } from './storage/storageController';
 import { IStorageRepository, StorageRepository } from './storage/storageRepository';
 import { IStorageService, StorageService } from './storage/storageService';
 import { IUserController, UserController } from './users/userController';
@@ -34,6 +35,7 @@ const container = tContainer
   .register<IAuthController>('AuthController', { useClass: AuthController })
   .register<IExpenseController>('ExpenseController', { useClass: ExpenseController })
   .register<IUserController>('UserController', { useClass: UserController })
+  .register<IStorageController>('StorageController', { useClass: StorageController })
   // Observers
   .register<IExpenseObserver>('ExpenseObserver', { useClass: ExpenseObserver });
 

@@ -12,6 +12,7 @@ export default {
   // Functions
   createUserProfile: onCall(userController.createUserProfile.bind(userController)),
   createUserRoles: onCall(userController.createUserRoles.bind(userController)),
+  updateUserProfile: onCall(userController.updateUserProfile.bind(userController)),
   // Triggers
 };
 

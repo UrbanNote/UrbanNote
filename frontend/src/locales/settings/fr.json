@@ -1,3 +1,37 @@
 {
-  "title": "Réglages"
+  "title": "Réglages",
+  "success": "Vos paramètres ont été enregistrés.",
+  "confirm": "Enregistrer",
+  "errors": {
+    "permissionDenied": "Vous n'avez pas la permission de modifier ces réglages.",
+    "userProfileNotFound": "Une erreur s'est produite lors de la récupération de votre profil. Veuillez réessayer plus tard.",
+    "unexpected": "Une erreur inattendue s'est produite. Veuillez réessayer plus tard."
+  },
+  "fields": {
+    "email": {
+      "label": "Adresse courriel",
+      "helpText": "Vous ne pouvez pas changer votre adresse courriel."
+    },
+    "firstName": {
+      "label": "Prénom",
+      "placeholder": "Entrez votre prénom",
+      "required": "Veuillez entrer votre prénom."
+    },
+    "lastName": {
+      "label": "Nom de famille",
+      "placeholder": "Entrez votre nom de famille",
+      "required": "Veuillez entrer votre nom de famille."
+    },
+    "chosenName": {
+      "label": "Nom choisi - optionnel",
+      "placeholder": "Entrez votre nom choisi",
+      "helpText": "Ceci est le prénom qui sera affiché aux autres utilisateurs."
+    },
+    "language": {
+      "label": "Langue",
+      "required": "Veuillez sélectionner une langue."
+    }
+  },
+  "profile": "Mon profil",
+  "contactInfo": "Informations de contact"
 }

@@ -6,15 +6,16 @@ import { ExpenseDetailsDoc } from './expenseDetailsDoc';
 import { IExpenseObserver } from './expenseObserver';
 import container from '../container';
 
-// On récupère le contrôleur depuis le conteneur d'injection de dépendances.
 const expenseController = container.resolve<IExpenseController>('ExpenseController');
 const expenseObserver = container.resolve<IExpenseObserver>('ExpenseObserver');
 
-// Le module exporte les fonctions qui sont encapsulées par des onCall et autres triggers.
 export default {
   // Functions
-  createExpenseDetail: onCall(expenseController.createExpense.bind(expenseController)),
-  updateExpenseDetail: onCall(expenseController.updateExpense.bind(expenseController)),
+  createExpense: onCall(expenseController.createExpense.bind(expenseController)),
+  updateExpense: onCall(expenseController.updateExpense.bind(expenseController)),
+  updateExpenseStatus: onCall(expenseController.updateExpenseStatus.bind(expenseController)),
+  deleteExpense: onCall(expenseController.deleteExpense.bind(expenseController)),
+  deleteAllExpenses: onCall(expenseController.deleteAllExpenses.bind(expenseController)),
 
   // Triggers
   onExpenseCreated: document('expenseDetails/{expenseId}').onCreate(snapshot =>
@@ -25,5 +26,8 @@ export default {
       change.before.data() as ExpenseDetailsDoc,
       change.after.data() as ExpenseDetailsDoc,
     ),
+  ),
+  onExpenseDeleted: document('expenseDetails/{expenseId}').onDelete(snapshot =>
+    expenseObserver.onExpenseDeleted.bind(expenseObserver)(snapshot.data() as ExpenseDetailsDoc),
   ),
 };

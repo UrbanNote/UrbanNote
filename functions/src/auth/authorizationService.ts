@@ -34,6 +34,7 @@ export class AuthorizationService implements IAuthorizationService {
     if (!userRoles) {
       throw new ApplicationError('not-found', 'UserRolesNotFound');
     }
+
     return userRoles;
   }
 
@@ -68,9 +69,10 @@ export class AuthorizationService implements IAuthorizationService {
   public async assertUserHasRoles(userId: string, roles: Partial<Omit<UserRoles, 'id'>>) {
     const userRoles = await this.getUserRoles(userId);
     if (userRoles.admin) return;
-    if (roles.admin) this.assertUserIsAdmin(userId);
-    if (roles.expenseManagement) this.assertUserHasExpenseManagementRole(userId);
-    if (roles.resourceManagement) this.assertUserHasResourceManagementRole(userId);
-    if (roles.userManagement) this.assertUserHasUserManagementRole(userId);
+
+    if (roles.admin) await this.assertUserIsAdmin(userId);
+    if (roles.expenseManagement) await this.assertUserHasExpenseManagementRole(userId);
+    if (roles.resourceManagement) await this.assertUserHasResourceManagementRole(userId);
+    if (roles.userManagement) await this.assertUserHasUserManagementRole(userId);
   }
 }

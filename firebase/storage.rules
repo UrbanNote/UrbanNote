@@ -18,7 +18,7 @@ service firebase.storage {
       // Only the user assigned to the expense, or users with the appropriate role
       return !entity.exists ||
         entity.data().assignedToId == request.auth.uid || 
-        (entityType == expenseDetails && hasExpenseManagementRole());
+        (entityType == 'expenseDetails' && hasExpenseManagementRole());
     }
 
     function canReadFile(metadata) {
@@ -30,11 +30,11 @@ service firebase.storage {
     }
 
     function getEntity(entityId, entityType) {
-      return get(/databases/$(database)/documents/$(entityType)/$(entityId));
+      return firestore.get(/databases/(default)/documents/$(entityType)/$(entityId));
     }
 
     function getUserRoles() {
-      return get(/databases/$(database)/documents/userRoles/$(request.auth.uid)).data;
+      return firestore.get(/databases/(default)/documents/userRoles/$(request.auth.uid)).data;
     }
 
     function hasExpenseManagementRole() {

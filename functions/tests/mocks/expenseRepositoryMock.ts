@@ -63,4 +63,16 @@ export class ExpenseRepositoryMock implements IExpenseRepository {
   public async getListExpenseDetails(ipp: number): Promise<ExpenseDetailsDoc[]> {
     return Array.from(this.expenseDetails.values()).slice(0, ipp);
   }
+
+  public async deleteExpenseDetailsById(expenseId: string): Promise<void> {
+    this.expenseDetails.delete(expenseId);
+  }
+
+  public async deleteAllExpenseDetails(assignedToId: string): Promise<void> {
+    this.expenseDetails.forEach((expense, id) => {
+      if (expense.assignedToId === assignedToId) {
+        this.expenseDetails.delete(id);
+      }
+    });
+  }
 }

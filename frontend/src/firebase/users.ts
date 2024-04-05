@@ -12,10 +12,34 @@ export type CreateUserProfileInput = {
   pictureId?: string;
 };
 
+export type CreateUserRolesData = {
+  userId?: string;
+  admin?: boolean;
+  expenseManagement?: boolean;
+  resourceManagement?: boolean;
+  userManagement?: boolean;
+};
+
+export type UpdateUserProfileData = {
+  userId?: string;
+  firstName: string;
+  lastName: string;
+  language: string;
+  chosenName?: string;
+  pictureId?: string;
+};
+
 export async function createUserProfile(input: CreateUserProfileInput) {
   const request = httpsCallable<CreateUserProfileInput, Promise<void>>(functions, 'users-createUserProfile');
   await request(input);
-  // si j'avais du data en retour, je pourrais le récupérer ici
-  // const result = await request(input);
-  // return result.data;
+}
+
+export async function createUserRoles(input: CreateUserRolesData) {
+  const request = httpsCallable<CreateUserRolesData, Promise<void>>(functions, 'users-createUserRoles');
+  await request(input);
+}
+
+export async function updateUserProfile(input: UpdateUserProfileData) {
+  const request = httpsCallable<UpdateUserProfileData, Promise<void>>(functions, 'users-updateUserProfile');
+  await request(input);
 }

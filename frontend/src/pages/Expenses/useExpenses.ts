@@ -4,9 +4,18 @@ import { onSnapshot } from 'firebase/firestore';
 import { useTranslation } from 'react-i18next';
 
 import type { ExpenseDetails } from '$firebase/expenses';
-import { getMyExpensesQuery } from '$firebase/expenses';
+import { ExpenseStatus } from '$firebase/expenses';
+import { queryExpenses } from '$firebase/expenses';
+import { getMonthStartAndEnd } from '$helpers';
 import { useAlerts } from '$hooks';
-import { useAppSelector } from '$store';
+
+const MONTH_FIRST_DAY = parseInt(`${import.meta.env.VITE_EXPENSES_MONTH_FIRST_DAY || '1'}`);
+
+export type UseExpensesArgs = {
+  difference?: number;
+  status: ExpenseStatus | null;
+  userId: string;
+};
 
 export type UseExpensesReturn = {
   data: ExpenseDetails[] | undefined;
@@ -14,9 +23,7 @@ export type UseExpensesReturn = {
   loading: boolean;
 };
 
-// TODO: add query params here
-export function useExpenses(): UseExpensesReturn {
-  const user = useAppSelector(state => state.user);
+export function useExpenses({ difference = 0, status: statusProp, userId }: UseExpensesArgs): UseExpensesReturn {
   const { t } = useTranslation('expenses');
   const alert = useAlerts();
   const [data, setData] = useState<ExpenseDetails[]>();
@@ -24,54 +31,29 @@ export function useExpenses(): UseExpensesReturn {
   const [error, setError] = useState<Error>();
 
   useEffect(() => {
-    if (!user.id) return undefined;
-
     let unsubscribe = () => {};
+    setData(undefined);
+    setLoading(true);
 
     try {
-      const expensesQuery = getMyExpensesQuery(user.id);
+      const [start, end] = getMonthStartAndEnd(difference, MONTH_FIRST_DAY);
+      const status = !statusProp
+        ? Object.values(ExpenseStatus).filter(s => s !== ExpenseStatus.ARCHIVED)
+        : [statusProp];
+      const expensesQuery = queryExpenses({ userId, start, end, status });
       unsubscribe = onSnapshot(expensesQuery, snapshot => {
-        if (!data) {
-          setLoading(false);
-          setData(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }) as ExpenseDetails));
-          return;
-        }
-
-        snapshot.docChanges().forEach(change => {
-          switch (change.type) {
-            case 'removed':
-              setData(prevExpenses => {
-                prevExpenses?.filter(exp => exp.id !== change.doc.id);
-                return prevExpenses;
-              });
-              break;
-            case 'added':
-            case 'modified':
-              setData(prevExpenses => {
-                const newExpense = change.doc.data() as ExpenseDetails;
-
-                if (!prevExpenses) return [newExpense];
-                const index = prevExpenses.findIndex(exp => exp.id === change.doc.id);
-                if (index === -1) {
-                  return [...prevExpenses, newExpense];
-                }
-
-                prevExpenses[index] = newExpense;
-                return prevExpenses;
-              });
-              break;
-          }
-        });
+        const expensesData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }) as ExpenseDetails);
+        setData(expensesData);
+        setLoading(false);
       });
     } catch (error) {
-      // TODO: handle known errors
       alert(t('useExpenses.errors.unknown'), 'danger');
       setError(error as Error);
     }
 
     return unsubscribe;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user.id]);
+  }, [difference, statusProp, userId]);
 
   return { data, error, loading };
 }

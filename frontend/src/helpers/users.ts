@@ -2,7 +2,7 @@ import type { UserProfileState, UserRolesState } from '$store/userStore';
 
 export function getUsualName(profile: UserProfileState | null) {
   if (!profile) return '';
-  return `${profile.chosenName ?? profile.firstName} ${profile.lastName}`;
+  return `${profile.chosenName || profile.firstName} ${profile.lastName}`;
 }
 
 export function getProfessionalName(profile: UserProfileState | null) {
