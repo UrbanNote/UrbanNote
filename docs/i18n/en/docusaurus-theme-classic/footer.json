@@ -1,0 +1,38 @@
+{
+  "link.title.Docs": {
+    "message": "Docs",
+    "description": "The title of the footer links column with title=Docs in the footer"
+  },
+  "link.title.Community": {
+    "message": "Community",
+    "description": "The title of the footer links column with title=Community in the footer"
+  },
+  "link.item.label.Introduction": {
+    "message": "Introduction",
+    "description": "The label of footer link with label=Introduction linking to /docs"
+  },
+  "link.item.label.Installation guide": {
+    "message": "Installation guide",
+    "description": "The label of footer link with label=Installation guide linking to /docs/category/installation-guide"
+  },
+  "link.item.label.Utilisation guide": {
+    "message": "Utilisation guide",
+    "description": "The label of footer link with label=Utilisation guide linking to /docs/category/utilisation-guide"
+  },
+  "link.item.label.API reference": {
+    "message": "API reference",
+    "description": "The label of footer link with label=API reference linking to /docs/api-reference"
+  },
+  "link.item.label.Architecture decisions": {
+    "message": "Architecture decisions",
+    "description": "The label of footer link with label=Architecture decisions linking to /docs/category/architecture-decisions"
+  },
+  "link.item.label.GitHub": {
+    "message": "GitHub",
+    "description": "The label of footer link with label=GitHub linking to https://github.com/UrbanNote"
+  },
+  "copyright": {
+    "message": "Copyright © 2024 UrbanNote. Built with Docusaurus.",
+    "description": "The footer copyright"
+  }
+}

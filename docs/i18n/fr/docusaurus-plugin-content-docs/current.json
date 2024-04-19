@@ -10,5 +10,25 @@
   "sidebar.tutorialSidebar.category.Installation guide.link.generated-index.description": {
     "message": "🚀 Apprenez comment installer et configurer UrbanNote.",
     "description": "The generated-index page description for category Installation guide in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Utilisation guide": {
+    "message": "Guide d'utilisation",
+    "description": "The label for category Utilisation guide in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Utilisation guide.link.generated-index.title": {
+    "message": "Guide d'utilisation",
+    "description": "The generated-index page title for category Utilisation guide in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Expenses module": {
+    "message": "Section dépenses",
+    "description": "The label for category Utilisation guide in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Architecture decisions": {
+    "message": "Décisions d'architecture",
+    "description": "The label for category Architecture decisions in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Architecture decisions.link.generated-index.description": {
+    "message": "🧑‍💻 En savoir plus sur les décisions en matière d'architecture logicielle. Si vous envisagez de contribuer ou de lancer le projet, ou si vous êtes simplement curieux de connaître les choix de conception d'UrbanNote, c'est ici que vous trouverez tout ce que vous devez savoir.",
+    "description": "The generated-index page description for category Architecture decisions in sidebar tutorialSidebar"
   }
 }

@@ -10,6 +10,8 @@ import Scrollbar from './Scrollbar';
 import SlideOut from './SlideOut';
 import Splash from './Splash';
 import TopNav from './TopNav';
+import TrainingVideo from './TrainingVideo';
+import YoutubeVideoModal from './YoutubeVideoModal';
 
 export {
   Alerts,
@@ -24,4 +26,6 @@ export {
   SlideOut,
   Splash,
   TopNav,
+  TrainingVideo,
+  YoutubeVideoModal,
 };

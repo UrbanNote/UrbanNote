@@ -1,0 +1,54 @@
+{
+  "fields": {
+    "email": {
+      "label": "Adresse courriel",
+      "helpText": "Vous ne pouvez pas changer votre adresse courriel."
+    },
+    "firstName": {
+      "label": "Prénom",
+      "placeholder": "Entrez votre prénom",
+      "required": "Veuillez entrer votre prénom."
+    },
+    "lastName": {
+      "label": "Nom de famille",
+      "placeholder": "Entrez votre nom de famille",
+      "required": "Veuillez entrer votre nom de famille."
+    },
+    "chosenName": {
+      "label": "Nom choisi - optionnel",
+      "placeholder": "Entrez votre nom choisi",
+      "helpText": "Ceci est le prénom qui sera affiché aux autres utilisateurs."
+    },
+    "language": {
+      "label": "Langue",
+      "required": "Veuillez sélectionner une langue."
+    }
+  },
+  "profile": "Mon profil",
+  "contactInfo": "Informations de contact",
+  "firstName": "Prénom",
+  "lastName": "Nom de famille",
+  "firstNamePlaceholder": " Saisissez votre prénom",
+  "lastNamePlaceholder": "Saisissez votre nom de famille",
+  "chosenName": "Prénom choisi",
+  "chosenNamePlaceholder": "Saisissez votre prénom choisi",
+  "chosenNameTips": " Si vous voulez qu'un prénom différent soit employé dans l'application et dans les communications, saisissez-le ici",
+  "signOut": "Déconnexion",
+  "save": "Sauvegarder",
+  "language": "Langue",
+  "fr": "Français canadien",
+  "en": "Anglais",
+  "contactInformation": "Informations de contact",
+  "myProfile": "Mon profil",
+  "greetingMessage": "🚀 Bienvenue sur UrbanNote !",
+  "missingInfo": "Il nous manque quelques informations pour compléter votre profil.",
+  "requiredField": "Les champs obligatoires sont marqués d'un astérisque",
+  "title": "Accueil et intégration",
+  "firstNameRequired": "Votre prénom est requis ",
+  "lastNameRequired": "Votre nom de famille est requis",
+  "languageRequired": "Veuillez chosir une langue",
+  "errors": {
+    "unknown": "Une erreur inattendue s'est produite. Veuillez réessayer plus tard."
+  },
+  "success": "Votre profil a été complété avec succès !"
+}

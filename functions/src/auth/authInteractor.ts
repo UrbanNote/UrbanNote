@@ -47,13 +47,7 @@ export interface IAuthInteractor {
    * @returns A promise that resolves when the user has been updated.
    * @throws If the requester does not have permission to update a user or if it does not exist.
    */
-  updateAuthUser(
-    requesterId: string,
-    disabled: boolean,
-    email?: string,
-    displayName?: string,
-    emailVerified?: boolean,
-  ): Promise<void>;
+  updateAuthUser(requesterId: string, disabled: boolean, email?: string, emailVerified?: boolean): Promise<void>;
 
   /**
    * Disables an Auth user in the Auth provider. A disabled user cannot sign in.
@@ -138,9 +132,8 @@ export class AuthInteractor implements IAuthInteractor {
     await this.authorizationService.assertUserHasUserManagementRole(requesterId);
 
     // If the requester is not admin, he can't create an auth user admin
-    const requesterRoles = await this.userRepository.getUserRoles(requesterId);
-    if (!requesterRoles?.admin && admin) {
-      throw new ApplicationError('permission-denied', 'permissionDenied');
+    if (admin) {
+      await this.authorizationService.assertUserIsAdmin(requesterId);
     }
 
     const existingUser = await this.authRepository.getAuthUserByEmail(email);
@@ -151,13 +144,7 @@ export class AuthInteractor implements IAuthInteractor {
     return this.authRepository.createAuthUser(requesterId, email, displayName, disabled, emailVerified);
   }
 
-  public async updateAuthUser(
-    requesterId: string,
-    disabled: boolean,
-    email: string,
-    displayName: string,
-    emailVerified: boolean,
-  ) {
+  public async updateAuthUser(requesterId: string, disabled: boolean, email: string, emailVerified: boolean) {
     const user = await this.authRepository.getAuthUserByEmail(email);
     if (!user) {
       throw new ApplicationError('not-found', 'UserNotFound');
@@ -167,15 +154,13 @@ export class AuthInteractor implements IAuthInteractor {
     }
 
     // If the requester is not admin, he can't update an auth user admin
-    const requesterRoles = await this.userRepository.getUserRoles(requesterId);
     const userRoles = await this.userRepository.getUserRoles(user.uid);
-    if (!requesterRoles?.admin && userRoles?.admin) {
-      throw new ApplicationError('permission-denied', 'permissionDenied');
+    if (userRoles?.admin) {
+      await this.authorizationService.assertUserIsAdmin(requesterId);
     }
 
     await this.authRepository.updateAuthUser(user.uid, {
       disabled,
-      displayName,
       emailVerified,
     });
   }
@@ -190,10 +175,9 @@ export class AuthInteractor implements IAuthInteractor {
     }
 
     // If the requester is not admin, he can't disable an auth user admin
-    const requesterRoles = await this.userRepository.getUserRoles(requesterId);
     const userRoles = await this.userRepository.getUserRoles(id);
-    if (!requesterRoles?.admin && userRoles?.admin) {
-      throw new ApplicationError('permission-denied', 'permissionDenied');
+    if (userRoles?.admin) {
+      await this.authorizationService.assertUserIsAdmin(requesterId);
     }
 
     if (user.disabled) {
@@ -213,10 +197,9 @@ export class AuthInteractor implements IAuthInteractor {
     }
 
     // If the requester is not admin, he can't enable an auth user admin
-    const requesterRoles = await this.userRepository.getUserRoles(requesterId);
     const userRoles = await this.userRepository.getUserRoles(id);
-    if (!requesterRoles?.admin && userRoles?.admin) {
-      throw new ApplicationError('permission-denied', 'permissionDenied');
+    if (userRoles?.admin) {
+      await this.authorizationService.assertUserIsAdmin(requesterId);
     }
 
     if (!user.disabled) {

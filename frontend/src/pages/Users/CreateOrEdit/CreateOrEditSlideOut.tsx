@@ -1,5 +1,6 @@
-import type { PropsWithChildren } from 'react';
+import { useEffect, useState, type PropsWithChildren } from 'react';
 
+import { doc, onSnapshot } from 'firebase/firestore';
 import { Formik } from 'formik';
 import { Spinner } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
@@ -7,36 +8,26 @@ import * as Yup from 'yup';
 
 import { SlideOut } from '$components';
 import '../Users.css';
-import type { CreateUserData } from '$firebase/auth';
+import { db } from '$firebase';
+import type { AuthUser, CreateUserData } from '$firebase/auth';
 import { createUser, updateUser } from '$firebase/auth';
-import type { UpdateUserProfileData } from '$firebase/users';
-import { updateUserProfile } from '$firebase/users';
 import { isFirebaseError } from '$helpers';
 import { useAlerts } from '$hooks';
+import type { UserProfileState, UserRolesState } from '$store/userStore';
 
 import Form from './Form';
-import type { AuthUserDetails, UserDetails } from '../Users';
+import type { UpdateUserDetails } from '../Users';
 
 export type UsersSlideOutProps = PropsWithChildren<{
-  userRecord?: UserDetails;
+  authUser?: AuthUser;
   showSlideOut: boolean;
   setShowSlideOut: (show: boolean) => void;
   onCreate: () => void;
-  onUpdate: () => void;
+  onUpdate: (userId: string, disabled: boolean, displayName: string) => void;
 }>;
 
-export type GetAuthUsersResponse = {
-  users: {
-    uid: string;
-    disabled: boolean;
-    displayName: string;
-    email: string;
-    emailVerified: boolean;
-  }[];
-};
-
 export function CreateOrEditSlideOut({
-  userRecord,
+  authUser,
   showSlideOut,
   setShowSlideOut,
   onCreate,
@@ -45,9 +36,13 @@ export function CreateOrEditSlideOut({
   const { t, i18n } = useTranslation('users');
   const alert = useAlerts();
 
-  const mode = userRecord ? 'editUser' : 'createUser';
+  const [userProfile, setUserProfile] = useState<UserProfileState | null | undefined>(undefined);
+  const [userRoles, setUserRoles] = useState<UserRolesState | null | undefined>(undefined);
+  const loading = authUser !== undefined && (userProfile === undefined || userRoles === undefined);
 
-  const fullName: string | undefined = userRecord?.profile?.firstName + ' ' + userRecord?.profile?.lastName;
+  const mode = authUser ? 'editUser' : 'createUser';
+
+  const fullName = authUser && userProfile ? `${userProfile.firstName} ${userProfile.lastName}` : '';
 
   const emptyValues: CreateUserData = {
     email: '',
@@ -64,17 +59,17 @@ export function CreateOrEditSlideOut({
   };
 
   const initialValues: CreateUserData = {
-    email: userRecord?.email ?? '',
-    emailVerified: Boolean(userRecord?.emailVerified),
-    firstName: userRecord?.profile?.firstName ?? '',
-    lastName: userRecord?.profile?.lastName ?? '',
-    language: userRecord?.profile?.language ?? i18n.language,
-    chosenName: userRecord?.profile?.chosenName ?? '',
-    disabled: Boolean(!userRecord?.disabled),
-    admin: Boolean(userRecord?.roles?.admin),
-    expenseManagement: Boolean(userRecord?.roles?.expenseManagement),
-    resourceManagement: Boolean(userRecord?.roles?.resourceManagement),
-    userManagement: Boolean(userRecord?.roles?.userManagement),
+    email: authUser?.email ?? '',
+    emailVerified: Boolean(authUser?.emailVerified),
+    firstName: authUser && userProfile ? userProfile.firstName : '',
+    lastName: authUser && userProfile ? userProfile.lastName : '',
+    language: authUser && userProfile ? userProfile.language : i18n.language,
+    chosenName: authUser && userProfile ? userProfile.chosenName : '',
+    disabled: Boolean(!authUser?.disabled),
+    admin: authUser && userRoles ? userRoles.admin : false,
+    expenseManagement: authUser && userRoles ? userRoles.expenseManagement : false,
+    resourceManagement: authUser && userRoles ? userRoles.resourceManagement : false,
+    userManagement: authUser && userRoles ? userRoles.userManagement : false,
   };
 
   const createOrEditUserSchema = Yup.object({
@@ -93,28 +88,37 @@ export function CreateOrEditSlideOut({
 
   const handleSubmit = async (values: CreateUserData) => {
     try {
-      if (userRecord) {
-        const authUser: AuthUserDetails = {
-          uid: userRecord.id,
-          disabled: !values.disabled,
-          displayName: values.firstName + ' ' + values.lastName,
-          email: values.email,
-          emailVerified: values.emailVerified,
+      // User modification
+      if (authUser) {
+        const userToModify: UpdateUserDetails = {
+          userId: authUser.uid,
+          auth: {
+            disabled: !values.disabled,
+            email: authUser.email,
+            emailVerified: values.emailVerified,
+          },
+          userProfile: {
+            firstName: values.firstName,
+            lastName: values.lastName,
+            language: values.language,
+            chosenName: values.chosenName,
+            pictureId: '',
+          },
+          userRoles: {
+            admin: values.admin,
+            expenseManagement: values.expenseManagement,
+            resourceManagement: values.resourceManagement,
+            userManagement: values.userManagement,
+          },
         };
 
-        const userProfile: UpdateUserProfileData = {
-          userId: userRecord.id,
-          firstName: values.firstName,
-          lastName: values.lastName,
-          language: values.language,
-          chosenName: values.chosenName,
-          pictureId: '',
-        };
+        await updateUser(userToModify);
 
-        await updateUser(authUser);
-        await updateUserProfile(userProfile);
+        const displayName = values.firstName + ' ' + values.lastName;
 
-        onUpdate();
+        onUpdate(authUser.uid, !values.disabled, displayName);
+
+        // User creation
       } else {
         await createUser(values);
 
@@ -132,27 +136,65 @@ export function CreateOrEditSlideOut({
     }
   };
 
+  useEffect(() => {
+    if (!authUser) {
+      return () => {};
+    }
+
+    setUserProfile(undefined);
+    setUserRoles(undefined);
+    try {
+      const userProfileQuery = doc(db, 'userProfiles', authUser.uid);
+
+      const unsubscribeProfile = onSnapshot(userProfileQuery, doc => {
+        setUserProfile(doc.exists() ? (doc.data() as UserProfileState) : null);
+      });
+
+      const userRolesQuery = doc(db, 'userRoles', authUser.uid);
+
+      const unsubscribeRoles = onSnapshot(userRolesQuery, doc => {
+        setUserRoles(doc.exists() ? (doc.data() as UserRolesState) : null);
+      });
+      return () => {
+        unsubscribeProfile();
+        unsubscribeRoles();
+      };
+    } catch (error) {
+      return () => {};
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [authUser?.uid]);
+
   return (
     <>
       <Formik initialValues={initialValues} validationSchema={createOrEditUserSchema} onSubmit={handleSubmit}>
-        {({ values, isSubmitting, handleSubmit, resetForm }) => (
+        {({ dirty, isSubmitting, isValid, handleSubmit, resetForm }) => (
           <SlideOut show={showSlideOut} setShow={setShowSlideOut} onCancel={() => resetForm({ values: emptyValues })}>
-            {/* TODO : À modifier (content vs title) */}
-            <SlideOut.Header content={userRecord ? fullName : `${t('createUsers')}`} closeBtn></SlideOut.Header>
+            <SlideOut.Header
+              title={
+                authUser
+                  ? userProfile?.firstName == null && userProfile?.lastName == null
+                    ? `${t('updateUser')}`
+                    : fullName
+                  : `${t('createUsers')}`
+              }
+              closeBtn
+            />
             <SlideOut.Body>
-              <Form userRecord={userRecord} />
+              {loading ? (
+                <Spinner size="sm" className="m-1" />
+              ) : (
+                <Form authUser={authUser} userRoles={userRoles} initialValues={initialValues} />
+              )}
             </SlideOut.Body>
             <SlideOut.Footer
               confirmLabel={isSubmitting ? <Spinner size="sm" /> : t(`${mode}.confirm`)}
               confirmProps={{
-                disabled:
-                  values.email === '' ||
-                  values.firstName === '' ||
-                  values.lastName === '' ||
-                  values.language === '' ||
-                  isSubmitting,
+                disabled: !isValid || !dirty || isSubmitting || loading,
                 onClick: handleSubmit,
-              }}></SlideOut.Footer>
+              }}
+            />
           </SlideOut>
         )}
       </Formik>

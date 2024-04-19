@@ -2,7 +2,7 @@ import { httpsCallable } from '@firebase/functions';
 import { sendSignInLinkToEmail, signInWithEmailLink } from 'firebase/auth';
 
 import { auth, functions } from '$firebase';
-import type { AuthUserDetails } from '$pages/Users/Users';
+import type { UpdateUserDetails } from '$pages/Users/Users';
 
 export type CreateUserData = {
   firstName: string;
@@ -13,10 +13,10 @@ export type CreateUserData = {
   chosenName?: string;
   pictureId?: string;
   disabled: boolean;
-  admin?: boolean;
-  expenseManagement?: boolean;
-  resourceManagement?: boolean;
-  userManagement?: boolean;
+  admin: boolean;
+  expenseManagement: boolean;
+  resourceManagement: boolean;
+  userManagement: boolean;
 };
 
 export type GetUsersData = {
@@ -50,13 +50,15 @@ export type GetUsersResponse = {
 };
 
 export type GetAuthUsersResponse = {
-  users: {
-    uid: string;
-    disabled: boolean;
-    displayName: string;
-    email: string;
-    emailVerified: boolean;
-  }[];
+  users: AuthUser[];
+};
+
+export type AuthUser = {
+  uid: string;
+  disabled: boolean;
+  displayName: string;
+  email: string;
+  emailVerified: boolean;
 };
 
 export type GetUserNamesResponse = {
@@ -95,8 +97,8 @@ export async function createUser(input: CreateUserData) {
   await request(input);
 }
 
-export async function updateUser(input: AuthUserDetails) {
-  const request = httpsCallable<AuthUserDetails, Promise<void>>(functions, 'auth-updateUser');
+export async function updateUser(input: UpdateUserDetails) {
+  const request = httpsCallable<UpdateUserDetails, Promise<void>>(functions, 'auth-updateUser');
   await request(input);
 }
 
@@ -125,6 +127,7 @@ export async function sendSignInLink(email: string) {
 
 export async function signInWithLink(email: string, url: string) {
   await signInWithEmailLink(auth, email, url);
+  localStorage.removeItem('emailForSignIn');
 }
 
 export async function signOut() {

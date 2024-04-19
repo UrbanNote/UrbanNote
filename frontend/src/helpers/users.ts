@@ -1,5 +1,10 @@
 import type { UserProfileState, UserRolesState } from '$store/userStore';
 
+export function getUsualFirstName(profile: UserProfileState | null) {
+  if (!profile) return '';
+  return profile.chosenName || profile.firstName;
+}
+
 export function getUsualName(profile: UserProfileState | null) {
   if (!profile) return '';
   return `${profile.chosenName || profile.firstName} ${profile.lastName}`;

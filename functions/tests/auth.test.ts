@@ -458,13 +458,7 @@ describe('Auth', () => {
       emailVerified: false,
     };
 
-    await authInteractor.updateAuthUser(
-      input1.requesterId,
-      input1.disabled,
-      input1.email,
-      input1.displayName,
-      input1.emailVerified,
-    );
+    await authInteractor.updateAuthUser(input1.requesterId, input1.disabled, input1.email, input1.emailVerified);
   });
 
   // Test de modification d'un auth user non admin par un auth user admin
@@ -477,13 +471,7 @@ describe('Auth', () => {
       emailVerified: true,
     };
 
-    await authInteractor.updateAuthUser(
-      input1.requesterId,
-      input1.disabled,
-      input1.email,
-      input1.displayName,
-      input1.emailVerified,
-    );
+    await authInteractor.updateAuthUser(input1.requesterId, input1.disabled, input1.email, input1.emailVerified);
   });
 
   // Test de modification d'un auth user non admin par un auth user userManagement
@@ -496,13 +484,7 @@ describe('Auth', () => {
       emailVerified: true,
     };
 
-    await authInteractor.updateAuthUser(
-      input1.requesterId,
-      input1.disabled,
-      input1.email,
-      input1.displayName,
-      input1.emailVerified,
-    );
+    await authInteractor.updateAuthUser(input1.requesterId, input1.disabled, input1.email, input1.emailVerified);
   });
 
   // Test de modification d'un auth user admin par un auth user userManagement
@@ -516,13 +498,7 @@ describe('Auth', () => {
     };
 
     await expect(
-      authInteractor.updateAuthUser(
-        input1.requesterId,
-        input1.disabled,
-        input1.email,
-        input1.displayName,
-        input1.emailVerified,
-      ),
+      authInteractor.updateAuthUser(input1.requesterId, input1.disabled, input1.email, input1.emailVerified),
     ).rejects.toThrow(ApplicationError);
   });
 
@@ -537,13 +513,7 @@ describe('Auth', () => {
     };
 
     await expect(
-      authInteractor.updateAuthUser(
-        input1.requesterId,
-        input1.disabled,
-        input1.email,
-        input1.displayName,
-        input1.emailVerified,
-      ),
+      authInteractor.updateAuthUser(input1.requesterId, input1.disabled, input1.email, input1.emailVerified),
     ).rejects.toThrow(ApplicationError);
   });
 
@@ -558,13 +528,7 @@ describe('Auth', () => {
     };
 
     await expect(
-      authInteractor.updateAuthUser(
-        input1.requesterId,
-        input1.disabled,
-        input1.email,
-        input1.displayName,
-        input1.emailVerified,
-      ),
+      authInteractor.updateAuthUser(input1.requesterId, input1.disabled, input1.email, input1.emailVerified),
     ).rejects.toThrow(ApplicationError);
   });
 
@@ -579,13 +543,7 @@ describe('Auth', () => {
     };
 
     await expect(
-      authInteractor.updateAuthUser(
-        input1.requesterId,
-        input1.disabled,
-        input1.email,
-        input1.displayName,
-        input1.emailVerified,
-      ),
+      authInteractor.updateAuthUser(input1.requesterId, input1.disabled, input1.email, input1.emailVerified),
     ).rejects.toThrow(ApplicationError);
   });
 
@@ -600,13 +558,7 @@ describe('Auth', () => {
     };
 
     await expect(
-      authInteractor.updateAuthUser(
-        input1.requesterId,
-        input1.disabled,
-        input1.email,
-        input1.displayName,
-        input1.emailVerified,
-      ),
+      authInteractor.updateAuthUser(input1.requesterId, input1.disabled, input1.email, input1.emailVerified),
     ).rejects.toThrow(ApplicationError);
   });
 
@@ -621,13 +573,7 @@ describe('Auth', () => {
     };
 
     await expect(
-      authInteractor.updateAuthUser(
-        input1.requesterId,
-        input1.disabled,
-        input1.email,
-        input1.displayName,
-        input1.emailVerified,
-      ),
+      authInteractor.updateAuthUser(input1.requesterId, input1.disabled, input1.email, input1.emailVerified),
     ).rejects.toThrow(ApplicationError);
   });
 

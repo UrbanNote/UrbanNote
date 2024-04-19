@@ -10,6 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 
 import { ConfirmationSlideOut } from '$components';
+import { TrainingVideos } from '$components/TrainingVideo';
 import { getUserNames } from '$firebase/auth';
 import type { ExpenseStatus } from '$firebase/expenses';
 import { deleteExpense, updateExpenseStatus } from '$firebase/expenses';
@@ -35,12 +36,12 @@ function Expenses() {
   const { t } = useTranslation('expenses');
   const isLayoutHorizontal = useAppLayout('horizontal');
   const isAboveMdBreakpoint = useScreenMinWidth('md');
+  const hasExpenseManagement = userHasExpenseManagement(user.roles);
   usePageDetails({
     title: t('title'),
     background: isLayoutHorizontal ? 'beige' : 'transparent',
+    trainingVideo: hasExpenseManagement ? TrainingVideos.EXPENSES_MANAGEMENT : TrainingVideos.EXPENSES_CREATION,
   });
-
-  const hasExpenseManagement = userHasExpenseManagement(user.roles);
 
   const [showCreateOrEditSlideOut, setShowCreateOrEditSlideOut] = useState(false);
   const [showFiltersSlideOut, setShowFiltersSlideOut] = useState(false);
@@ -206,6 +207,7 @@ function Expenses() {
         <FiltersSlideOut
           show={showFiltersSlideOut}
           setShow={setShowFiltersSlideOut}
+          userNames={userNames}
           assignedToId={searchParams.get('assignedToId') || user.id!}
           difference={searchParams.get('difference') ? parseInt(searchParams.get('difference')!) : 0}
           status={(searchParams.get('status') ?? 'all') as FilterFormValues['status']}

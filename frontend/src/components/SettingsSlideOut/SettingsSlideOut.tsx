@@ -1,13 +1,17 @@
 import type { FormikHelpers } from 'formik';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
+import { AnimatePresence, motion } from 'framer-motion';
+import Button from 'react-bootstrap/Button';
 import BootstrapForm from 'react-bootstrap/Form';
 import Spinner from 'react-bootstrap/Spinner';
 import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
 
+import { fade } from '$animations';
 import { SlideOut } from '$components';
+import type { TrainingVideos } from '$components/TrainingVideo';
 import { updateUserProfile } from '$firebase/users';
-import { useAlerts } from '$hooks';
+import { useAlerts, useLocalStorage } from '$hooks';
 import { useAppSelector } from '$store';
 
 type SettingsSlideOutProps = {
@@ -26,8 +30,9 @@ function SettingsSlideOut({ show, setShow }: SettingsSlideOutProps) {
   const { t } = useTranslation('settings');
   const { t: tCommon } = useTranslation('common');
   const alert = useAlerts();
-
   const user = useAppSelector(state => state.user);
+  const [hiddenTrainingVideos, setHiddenTrainingVideos] = useLocalStorage<TrainingVideos[]>('hiddenTrainingVideos', []);
+  const showResetTrainingVideos = hiddenTrainingVideos.length > 0;
 
   const handleSubmit = async (values: SettingsFormValues, helpers: FormikHelpers<SettingsFormValues>) => {
     try {
@@ -36,7 +41,6 @@ function SettingsSlideOut({ show, setShow }: SettingsSlideOutProps) {
       alert(t('success'), 'success');
       setShow(false);
     } catch (error) {
-      // TODO: validate errors we know
       alert(t('errors.unexpected'), 'danger');
     }
   };
@@ -56,8 +60,9 @@ function SettingsSlideOut({ show, setShow }: SettingsSlideOutProps) {
   };
 
   if (!user.profile) {
-    return <></>;
+    return null;
   }
+
   return (
     <Formik<SettingsFormValues> initialValues={initialValues} validationSchema={settingsSchema} onSubmit={handleSubmit}>
       {({ errors, values, isValid, isSubmitting, handleSubmit, setFieldValue, resetForm }) => (
@@ -126,6 +131,18 @@ function SettingsSlideOut({ show, setShow }: SettingsSlideOutProps) {
                 <BootstrapForm.Text className="text-muted">{t('fields.email.helpText')}</BootstrapForm.Text>
               </BootstrapForm.Group>
             </Form>
+            {/* TODO: put title outside of conditional rendering when there are more options */}
+            <AnimatePresence>
+              {showResetTrainingVideos && (
+                <BootstrapForm.Group as={motion.div} {...fade}>
+                  <h3 className="text-primary mt-4 mb-3 h5">{t('general')}</h3>
+                  <p>{t('resetTrainingVideos.tip')}</p>
+                  <Button variant="link" onClick={() => setHiddenTrainingVideos([])} className="p-0">
+                    {t('resetTrainingVideos.button')}
+                  </Button>
+                </BootstrapForm.Group>
+              )}
+            </AnimatePresence>
           </SlideOut.Body>
           <SlideOut.Footer
             confirmLabel={isSubmitting ? <Spinner size="sm" /> : t('confirm')}

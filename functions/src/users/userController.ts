@@ -3,6 +3,8 @@ import Joi from 'joi';
 import { inject, injectable } from 'tsyringe';
 
 import { IUserInteractor } from './userInteractor';
+import { UserProfileDoc } from './userProfileDoc';
+import { UserRolesDoc } from './userRolesDoc';
 import { ApplicationError, handleError } from '../errors';
 
 export type CreateUserProfileData = {
@@ -103,6 +105,16 @@ export interface IUserController {
    * from the user. If the userId is not specified, the requester's id is used.
    */
   updateUserRoles(data: UpdateUserRolesData, context: CallableContext): Promise<void>;
+
+  /**
+   * Gets the user's profile
+   */
+  getUserProfile(userId: string, context: CallableContext): Promise<UserProfileDoc | null>;
+
+  /**
+   * Gets the user's roles
+   */
+  getUserRoles(userId: string, context: CallableContext): Promise<UserRolesDoc | null>;
 }
 
 @injectable()
@@ -203,6 +215,30 @@ export class UserController implements IUserController {
         data.resourceManagement,
         data.userManagement,
       );
+    } catch (error) {
+      throw handleError(error);
+    }
+  }
+
+  public async getUserProfile(userId: string, context: CallableContext) {
+    try {
+      if (!context.auth) {
+        throw new ApplicationError('unauthenticated', 'NotAuthenticated');
+      }
+
+      return await this.userInteractor.getUserProfile(userId);
+    } catch (error) {
+      throw handleError(error);
+    }
+  }
+
+  public async getUserRoles(userId: string, context: CallableContext) {
+    try {
+      if (!context.auth) {
+        throw new ApplicationError('unauthenticated', 'NotAuthenticated');
+      }
+
+      return await this.userInteractor.getUserRoles(userId);
     } catch (error) {
       throw handleError(error);
     }

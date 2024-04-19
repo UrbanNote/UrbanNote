@@ -24,7 +24,7 @@ export class StorageController implements IStorageController {
         throw new ApplicationError('unauthenticated', 'NotAuthenticated');
       }
 
-      await this.storageService.deleteFile(paths);
+      await this.storageService.deleteFile(paths, context.auth.uid);
     } catch (error) {
       throw handleError(error);
     }

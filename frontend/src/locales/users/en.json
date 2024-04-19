@@ -1,6 +1,7 @@
 {
   "title": "Users",
   "createUsers": "Create a user",
+  "updateUser": "Update this user",
   "applyFilters": "Apply",
   "resetFilters": "Reset filters",
   "noUsersFilter": "No user matches your search.", 
@@ -43,6 +44,8 @@
         "userProfile": "User profile"
       },
       "accountInfo": "Account information",
+      "permissions": "You are not authorized to modify this user",
+      "adminCheckboxPermission": "You must be an administrator to be able to manage this access",
       "emailForm": "Enter an email address",
       "emailModified": "Cannot be modified",
       "enableCheckbox": "Enable - Can connect to the platform",
@@ -78,7 +81,8 @@
     "editUser": {
       "errors": {
         "UserNotFound": "The user you are trying to edit does not exist.",
-        "unexpected": "An unexpected error has occured. Please try again later."
+        "unexpected": "An unexpected error has occured. Please try again later.",
+        "permissionDenied": "You are not allowed to perform this action."
       },
       "success": "The user has been saved successfully.",
       "confirm": "Save changes",

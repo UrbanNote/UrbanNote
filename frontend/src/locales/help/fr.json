@@ -1,0 +1,21 @@
+{
+  "trainingVideos": {
+    "onFirstDissmiss": "Vous pouvez réinitialiser les vidéos masquées dans les réglages du menu utilisateur.",
+    "playlist": {
+      "title": "Vidéos tutorielles",
+      "src": "https://www.youtube.com/embed/videoseries?si=uwnQy4Ymyyu-jTBA&amp;list=PL9Ppsd1La5FnISyjxuzRRBAIdwdAp3S2Q"
+    },
+    "expenses-creation": {
+      "title": "Apprenez comment créer vos dépenses dans UrbanNote !",
+      "src": "https://www.youtube.com/embed/z4W8Q4OEkmo?si=V2cmOdDRuQSajIvq"
+    },
+    "expenses-management": {
+      "title": "Apprenez comment gérer les dépenses de vos employés dans UrbanNote !",
+      "src": "https://www.youtube.com/embed/OIBVNPb5Xco?si=JP3L-T36OeIq0eMw"
+    },
+    "users-management": {
+      "title": "Apprenez comment gérer les utilisateurs dans UrbanNote !",
+      "src": "https://www.youtube.com/embed/KK4ZfeATzKI"
+    }
+  }
+}

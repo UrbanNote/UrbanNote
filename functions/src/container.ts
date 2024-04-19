@@ -13,6 +13,7 @@ import { IStorageRepository, StorageRepository } from './storage/storageReposito
 import { IStorageService, StorageService } from './storage/storageService';
 import { IUserController, UserController } from './users/userController';
 import { IUserInteractor, UserInteractor } from './users/userInteractor';
+import { IUserObserver, UserObserver } from './users/userObserver';
 import { IUserRepository, UserRepository } from './users/userRepository';
 
 /**
@@ -37,6 +38,7 @@ const container = tContainer
   .register<IUserController>('UserController', { useClass: UserController })
   .register<IStorageController>('StorageController', { useClass: StorageController })
   // Observers
-  .register<IExpenseObserver>('ExpenseObserver', { useClass: ExpenseObserver });
+  .register<IExpenseObserver>('ExpenseObserver', { useClass: ExpenseObserver })
+  .register<IUserObserver>('UserObserver', { useClass: UserObserver });
 
 export default container;

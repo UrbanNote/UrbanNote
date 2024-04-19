@@ -79,6 +79,11 @@
     margin-bottom: 1em;
 }
 
+.checkbox-admin-form {
+    display: flex;
+    align-items: center;
+}
+
 .email-text {
     margin-left: 0.5em;
 }

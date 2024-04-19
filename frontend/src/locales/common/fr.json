@@ -4,6 +4,9 @@
       "unknown": "Une erreur inattendue s'est produite lors de la récupération de vos données. Veuillez réessayer plus tard."
     }
   },
+  "helpCenter": "Centre d'aide",
+  "documentation": "Documentation",
+  "trainingVideos": "Vidéos de formation",
   "settings": "Réglages",
   "signOut": "Déconnexion",
   "signIn": {

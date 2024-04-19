@@ -8,7 +8,7 @@ import { IExpenseRepository } from '../expenses/expenseRepository';
 export interface IExpenseInteractor {
   /** Create an expense. If the requester is not the same as the creator, the requester must be an expenseManagement.
    * @returns A promise that resolves when the expense has been created.
-   *throws if the expense already exists or if the requester is not the creator or an expenseManagement.
+   * @throws if the expense already exists or if the requester is not the creator or an expenseManagement.
    */
   createExpense(
     requesterId: string,
@@ -23,13 +23,13 @@ export interface IExpenseInteractor {
 
   /** Get an expense.
    * @returns A promise that resolves when the expense has been retrieved.
-   *throws if the expense does not exist or if the requester is not the creator.
+   * @throws if the expense does not exist or if the requester is not the creator.
    */
   getExpenses(ipp: number): Promise<ExpenseDetailsDoc[]>;
 
   /** Update an expense.
    * @returns A promise that resolves when the expense has been updated.
-   *throws if the expense does not exist or if the requester doesn't have the expenseManagement or admin role.
+   * @throws if the expense does not exist or if the requester doesn't have the expenseManagement or admin role.
    */
   updateExpense(
     requesterId: string,
@@ -46,13 +46,13 @@ export interface IExpenseInteractor {
 
   /** Delete an expense.
    * @returns A promise that resolves when the expense has been deleted.
-   *throws if the expense does not exist or if the requester is not the creator, an expenseManagement or an admin.
+   * @throws if the expense does not exist or if the requester is not the creator, an expenseManagement or an admin.
    */
   deleteExpense(requesterId: string, expenseId: string): Promise<void>;
 
   /** Delete all expenses.
    * @returns A promise that resolves when the expenses have been deleted.
-   *throws if the requester is not an admin or an expenseManagement.
+   * @throws if the requester is not an admin or an expenseManagement.
    */
   deleteAllExpenses(requesterId: string, assignedToId: string): Promise<void>;
 }

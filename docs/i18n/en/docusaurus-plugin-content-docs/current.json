@@ -1,0 +1,30 @@
+{
+  "version.label": {
+    "message": "Next",
+    "description": "The label for version current"
+  },
+  "sidebar.tutorialSidebar.category.Installation guide": {
+    "message": "Installation guide",
+    "description": "The label for category Installation guide in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Installation guide.link.generated-index.description": {
+    "message": "🚀 Learn how to install and configure UrbanNote.",
+    "description": "The generated-index page description for category Installation guide in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Utilisation guide": {
+    "message": "Utilisation guide",
+    "description": "The label for category Utilisation guide in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Expenses module": {
+    "message": "Expenses module",
+    "description": "The label for category Expenses module in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Architecture decisions": {
+    "message": "Architecture decisions",
+    "description": "The label for category Architecture decisions in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Architecture decisions.link.generated-index.description": {
+    "message": "🧑‍💻 Learn about or software architecture decisions. If you're planning on contributing or forking the project, or if you're just curious about UrbanNote's design choices, this is where you will find all you need to know.",
+    "description": "The generated-index page description for category Architecture decisions in sidebar tutorialSidebar"
+  }
+}

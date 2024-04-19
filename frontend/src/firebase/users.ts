@@ -29,6 +29,14 @@ export type UpdateUserProfileData = {
   pictureId?: string;
 };
 
+export type UpdateUserRolesData = {
+  userId?: string;
+  admin: boolean;
+  expenseManagement: boolean;
+  resourceManagement: boolean;
+  userManagement: boolean;
+};
+
 export async function createUserProfile(input: CreateUserProfileInput) {
   const request = httpsCallable<CreateUserProfileInput, Promise<void>>(functions, 'users-createUserProfile');
   await request(input);
@@ -41,5 +49,10 @@ export async function createUserRoles(input: CreateUserRolesData) {
 
 export async function updateUserProfile(input: UpdateUserProfileData) {
   const request = httpsCallable<UpdateUserProfileData, Promise<void>>(functions, 'users-updateUserProfile');
+  await request(input);
+}
+
+export async function updateUserRoles(input: UpdateUserRolesData) {
+  const request = httpsCallable<UpdateUserRolesData, Promise<void>>(functions, 'users-updateUserRoles');
   await request(input);
 }

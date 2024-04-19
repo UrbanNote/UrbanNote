@@ -32,6 +32,11 @@
       "required": "Please select a language."
     }
   },
+  "general": "General",
+  "resetTrainingVideos": {
+    "tip": "You have hidden some training videos. Would you like to to show them all again?",
+    "button": "Show hidden videos again"
+  },
   "profile": "My Profile",
   "contactInfo": "Contact Information"
 }

@@ -36,7 +36,7 @@ export function Filters({ onApplyFilters, setIsFilterApplied, isFilterApplied }:
       case 'enabled': {
         if (searchBarValue === '') {
           // Filtre pour Statuts = Actif && rien dans la search bar
-          onApplyFilters(false, undefined);
+          onApplyFilters(false);
         } else {
           // Filtre pour Statuts = Actif && string dans la search bar
           onApplyFilters(false, searchBarValue);
@@ -46,7 +46,7 @@ export function Filters({ onApplyFilters, setIsFilterApplied, isFilterApplied }:
       case 'disabled': {
         if (searchBarValue === '') {
           // Filtre pour Statuts = Inactif && rien dans la search bar
-          onApplyFilters(true, undefined);
+          onApplyFilters(true);
         } else {
           // Filtre pour Statuts = Inactif && string dans la search bar
           onApplyFilters(true, searchBarValue);

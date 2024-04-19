@@ -27,7 +27,6 @@ function SignIn() {
 
   usePageDetails({ title: t('signIn.title') });
 
-  // TODO: test on deploy if users can subscribe with this method when signing up is disabled.
   useEffect(() => {
     setHasOobCode(params.has('oobCode'));
 

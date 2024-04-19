@@ -35,6 +35,8 @@ deploy_dev:
   script:
     - cd ./frontend && echo "" > .env
     - echo "VITE_APP_PUBLIC_URL=$VITE_APP_PUBLIC_URL" >> .env
+    - echo "VITE_DOCUMENTATION_URL_EN=$VITE_DOCUMENTATION_URL_EN" >> .env
+    - echo "VITE_DOCUMENTATION_URL_FR=$VITE_DOCUMENTATION_URL_FR" >> .env
     - echo "VITE_FIREBASE_API_KEY=$VITE_FIREBASE_API_KEY" >> .env
     - echo "VITE_FIREBASE_AUTH_DOMAIN=$VITE_FIREBASE_AUTH_DOMAIN" >> .env
     - echo "VITE_FIREBASE_PROJECT_ID=$VITE_FIREBASE_PROJECT_ID" >> .env

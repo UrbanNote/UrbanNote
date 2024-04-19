@@ -10,7 +10,7 @@ i18n
   .use(initReactI18next)
   .init({
     debug: !import.meta.env.PROD,
-    fallbackLng: localStorage.getItem('i18nextLng') ?? 'fr',
+    fallbackLng: JSON.parse(localStorage.getItem('language') ?? '"fr"'),
     interpolation: {
       escapeValue: false,
     },

@@ -1,8 +1,62 @@
+<div align="center">
+
+![UrbanNote](./logo.png)
+
 # UrbanNote
 
-Une application web qui vient en aide aux travailleurs et travailleuses de rue en leur offrant des outils pratiques.
+🔗 <https://urbannote.org>
+
+⚖️ [LiliQ-R+ License](./LICENSE)
+
+📋 [Changelog](./CHANGELOG.md)
+
+[English](#english) | [Français](#français)
+
+</div>
+
+## English
+
+UrbanNote is a web application that assists street workers by providing practical tools.
+
+## Getting Started
+
+Read or [documentation](https://urbannote.org/docs) for more detailed information.
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/en/) (version 18.16.0 or newer)
+- [Yarn](https://yarnpkg.com/) (version 1.22.19 or newer)
+
+If you encounter ExecutionPolicy errors with Yarn, you can run the command `Set-ExecutionPolicy RemoteSigned` in a PowerShell terminal as an administrator.
+
+### Setting up Firebase
+
+- Install the Firebase CLI with `npm install -g firebase-tools`.
+- Log in to your Firebase account with `firebase login`.
+- Access your Firebase project and retrieve the environment variables.
+- In the `./frontend` folder, copy the `.env.local.example` file and rename the copy to `.env.local`.
+- Replace the values of the environment variables in the `.env.local` file with those from your Firebase project.
+
+### Installing Dependencies
+
+Run `yarn` in the `./frontend` and `./functions/` folders to install the dependencies.
+
+### Local Development
+
+The project is set up to use Firebase emulators for development. This is a local version of Firebase services that allows you to test the application without deploying it to a server.
+
+- You must have a compiled version of your Cloud Functions available for them to be accessible on the emulator. You can use the command `yarn dev:functions` to compile and automatically update them when you make changes.
+- If you have never used Firebase emulators before, use the command `firebase init emulators` to download them. Since the settings are already initialized, you can simply accept the default values, then enter `Y` when asked if you want to download the emulators.
+- Use the command `yarn emulate` to start the emulators. You will find the emulator addresses in the console.
+- You can now start the React application by using the command `yarn dev:frontend`.
+
+## Français
+
+UrbanNote est une application web qui vient en aide aux travailleurs et travailleuses de rue en leur offrant des outils pratiques.
 
 ## Mise en route
+
+Lisez notre [documentation](https://urbannote.org/fr/docs) pour plus d'informations détaillées.
 
 ### Prérequis
 

@@ -1,38 +1,57 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import { AppContainer } from '$components';
 import Expenses from '$pages/Expenses';
 import Home from '$pages/Home';
-import Settings from '$pages/Settings';
+import Onboarding from '$pages/Onboarding';
 import SignIn from '$pages/SignIn';
 import Users from '$pages/Users';
 import { useAppSelector } from '$store';
 
-import { ProtectedRoute } from './ProtectedRoute';
+import ProtectedRoute from './ProtectedRoute';
 
-export function AppRouter() {
+function AppRouter() {
   const user = useAppSelector(state => state.user);
+
+  if (!user.id) {
+    return (
+      <BrowserRouter>
+        <Routes>
+          <Route path="*" element={<SignIn />} />
+        </Routes>
+      </BrowserRouter>
+    );
+  }
+
+  if (!user.profile) {
+    return (
+      <BrowserRouter>
+        <Routes>
+          <Route path="*" element={<Onboarding />} />
+        </Routes>
+      </BrowserRouter>
+    );
+  }
 
   return (
     <BrowserRouter>
       <Routes>
-        {!user.id ? (
-          <Route path="*" element={<SignIn />} />
-        ) : (
-          <Route path="" element={<AppContainer />}>
-            <Route path="/" element={<Home />} />
-            <Route path="expenses" element={<Expenses />} />
-            <Route path="settings" element={<Settings />} />
-            <Route
-              path="users"
-              element={
-                <ProtectedRoute userManagement>
-                  <Users />
-                </ProtectedRoute>
-              }></Route>
-          </Route>
-        )}
+        <Route path="/" element={<AppContainer />}>
+          <Route index element={<Home />} />
+          <Route path="expenses" element={<Expenses />} />
+          <Route
+            path="users"
+            element={
+              <ProtectedRoute userManagement>
+                <Users />
+              </ProtectedRoute>
+            }
+          />
+        </Route>
+        <Route path="*" element={<Home />} />
       </Routes>
     </BrowserRouter>
   );
 }
+
+export default AppRouter;

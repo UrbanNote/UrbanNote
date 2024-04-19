@@ -16,7 +16,8 @@ const config = {
   url: 'https://urbannote.org',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: '/',
+  baseUrl: "/",
+  trailingSlash: false,
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
@@ -88,7 +89,7 @@ const config = {
             label: 'Docs',
           },
           {
-            href: 'https://github.com/UrbanNote/',
+            href: 'https://github.com/UrbanNote/UrbanNote',
             label: 'GitHub',
             position: 'right',
           },
@@ -113,28 +114,19 @@ const config = {
                 to: '/docs/category/installation-guide',
               },
               {
+                label: 'Utilisation guide',
+                to: '/docs/category/utilisation-guide',
+              },
+              {
                 label: 'API reference',
                 to: '/docs/api-reference',
               },
+              {
+                label: 'Architecture decisions',
+                to: '/docs/category/architecture-decisions',
+              },
             ],
           },
-          // {
-          //   title: 'Community',
-          //   items: [
-          //     {
-          //       label: 'Stack Overflow',
-          //       href: 'https://stackoverflow.com/questions/tagged/docusaurus',
-          //     },
-          //     {
-          //       label: 'Discord',
-          //       href: 'https://discordapp.com/invite/docusaurus',
-          //     },
-          //     {
-          //       label: 'Twitter',
-          //       href: 'https://twitter.com/docusaurus',
-          //     },
-          //   ],
-          // },
           {
             title: 'Community',
             items: [

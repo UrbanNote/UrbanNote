@@ -1,92 +1,178 @@
-import { useRef } from 'react';
+import { useMutation } from '@tanstack/react-query';
+import { ErrorMessage, Field, Form, Formik } from 'formik';
+import { motion } from 'framer-motion';
+import Button from 'react-bootstrap/Button';
+import Card from 'react-bootstrap/Card';
+import Container from 'react-bootstrap/Container';
+import BootstrapForm from 'react-bootstrap/Form';
+import Spinner from 'react-bootstrap/Spinner';
+import Stack from 'react-bootstrap/Stack';
+import { useTranslation } from 'react-i18next';
+import * as Yup from 'yup';
 
-import { Button, Col, Form } from 'react-bootstrap';
-
+import { slideIn } from '$animations';
+import peaks from '$assets/peaks.svg';
 import { signOut } from '$firebase/auth';
+import type { CreateUserProfileInput } from '$firebase/users';
 import { createUserProfile } from '$firebase/users';
+import { useAlerts } from '$hooks';
+import { useAppSelector } from '$store';
 
 import './Onboarding.scss';
 
-interface Props {
-  userEmail: string | undefined;
-}
+type OnboardingFormValues = {
+  firstName: string;
+  lastName: string;
+  chosenName: string;
+  language: string;
+};
 
-export default function Onboarding({ userEmail }: Props) {
-  // const emailInputRef = useRef<HTMLInputElement>(null);
-  const firstNameInputRef = useRef<HTMLInputElement>(null);
-  const lastNameInputRef = useRef<HTMLInputElement>(null);
-  const chosenNameInputRef = useRef<HTMLInputElement>(null);
-  const languageSelectRef = useRef<HTMLSelectElement>(null);
+export default function Onboarding() {
+  const user = useAppSelector(state => state.user);
+  const { t, i18n } = useTranslation('onboarding');
+  const { t: tCommon } = useTranslation('common');
+  const alert = useAlerts();
 
-  const handleCreateProfile = async () => {
-    await createUserProfile({
-      firstName: firstNameInputRef.current!.value,
-      lastName: lastNameInputRef.current!.value,
-      chosenName: chosenNameInputRef.current?.value,
-      email: userEmail!,
-      language: languageSelectRef.current!.value,
-    });
-  };
+  const createUserProfileMutation = useMutation({
+    mutationFn: async (data: CreateUserProfileInput) => createUserProfile(data),
+  });
 
-  const handleSubmit = () => {
-    handleCreateProfile();
+  const handleSubmit = async (values: OnboardingFormValues) => {
+    try {
+      await createUserProfileMutation.mutateAsync({
+        userId: user.id!,
+        email: user.email!,
+        firstName: values.firstName,
+        lastName: values.lastName,
+        chosenName: values.chosenName,
+        language: values.language,
+      });
+
+      alert(t('success'), 'success');
+    } catch (error) {
+      alert(t('errors.unknown'), 'danger');
+    }
   };
 
   const handleSignOut = async () => {
     await signOut();
   };
 
+  const validationSchema = Yup.object({
+    firstName: Yup.string().required(t('fields.firstName.required')),
+    lastName: Yup.string().required(t('fields.lastName.required')),
+    chosenName: Yup.string(),
+    language: Yup.string().required(t('fields.language.required')),
+  });
+
+  const initialValues = {
+    firstName: '',
+    lastName: '',
+    chosenName: '',
+    language: i18n.language,
+  };
+
   return (
-    <div className="viande">
-      <h1>Bienvenue à UrbanNote !</h1>
-      <p>Il nous manque quelques informations pour compléter votre profil.</p>
-      <br></br>
-      <p>
-        Les champs obligatoires sont marqués d&apos;une astérisque (<span className="asterisk">*</span>).
-      </p>
-      <h2 className="subtitle">Mon profil</h2>
-      <Form>
-        <Form.Group className="mb-3" controlId="OnboardingForm.firstName">
-          <Form.Label>Prénom</Form.Label>
-          <Form.Label className="asterisk">*</Form.Label>
-          <Form.Control type="firstName" placeholder="Entrez votre prénom" ref={firstNameInputRef} required />
-        </Form.Group>
-        <Form.Group className="mb-3" controlId="OnboardingForm.lastName">
-          <Form.Label>Nom de famille</Form.Label>
-          <Form.Label className="asterisk">*</Form.Label>
-          <Form.Control type="lastName" placeholder="Entrez votre nom de famille" ref={lastNameInputRef} required />
-        </Form.Group>
-        <Form.Group className="mb-3" controlId="OnboardingForm.chosenName">
-          <Form.Label>Prénom choisi</Form.Label>
-          <Form.Control type="chosenName" placeholder="You were the chosen One!" ref={chosenNameInputRef} />
-          <Form.Text>
-            Si vous voulez qu&apos;un prénom différent apparaise dans l&apos;application et dans les communications,
-            entrez-le ici.
-          </Form.Text>
-        </Form.Group>
-
-        <h2 className="subtitle">Informations de contact</h2>
-
-        <Form.Group as={Col} className="mb-3" controlId="OnboardingForm.language">
-          <Form.Label>Langue</Form.Label>
-          <Form.Select defaultValue="Français canadien" ref={languageSelectRef}>
-            <option>Français canadien</option>
-            <option>English</option>
-          </Form.Select>
-        </Form.Group>
-        {/* <Form.Group className="mb-3" controlId="OnboardingForm.email">
-          <Form.Label>Adresse courriel</Form.Label>
-          <Form.Control type="email" ref={emailInputRef} value={userEmail} onChange={handleChangeEmail} />
-        </Form.Group> */}
-        <div className="footer-button">
-          <Button type="submit" variant="success" onClick={handleSubmit}>
-            Sauvegarder
-          </Button>
-          <Button variant="danger" onClick={handleSignOut}>
-            Sign Out
-          </Button>
-        </div>
-      </Form>
-    </div>
+    <Container
+      fluid
+      className="w-screen min-vh-100 bg-primary-100 p-0 position-relative d-flex justify-content-center align-items-center">
+      <Container>
+        <Card
+          className="z-1 p-4 rounded-5 border-0 shadow-lg"
+          as={motion.div}
+          {...slideIn}
+          style={{ maxWidth: 600, margin: 'auto' }}>
+          <h2>{t('greetingMessage')}</h2>
+          <p>{t('missingInfo')}</p>
+          <p>
+            {t('requiredField')} (<span className="text-danger">*</span>).
+          </p>
+          <Formik<OnboardingFormValues>
+            initialValues={initialValues}
+            validationSchema={validationSchema}
+            onSubmit={handleSubmit}>
+            {({ errors, isValid, isSubmitting, values, dirty, setFieldValue }) => (
+              <Form className="w-100">
+                <h3 className="text-primary mb-3 h5">{t('profile')}</h3>
+                <BootstrapForm.Group className="mb-3" controlId="firstName">
+                  <BootstrapForm.Label>
+                    {t('fields.firstName.label')}
+                    <span className="text-danger">*</span>
+                  </BootstrapForm.Label>
+                  <Field
+                    name="firstName"
+                    as={BootstrapForm.Control}
+                    type="text"
+                    placeholder={t('fields.firstName.placeholder')}
+                  />
+                  <ErrorMessage name="firstName" component="div" className="text-danger" />
+                </BootstrapForm.Group>
+                <BootstrapForm.Group className="mb-3" controlId="lastName">
+                  <BootstrapForm.Label>
+                    {t('fields.lastName.label')}
+                    <span className="text-danger">*</span>
+                  </BootstrapForm.Label>
+                  <Field
+                    name="lastName"
+                    as={BootstrapForm.Control}
+                    type="text"
+                    placeholder={t('fields.lastName.placeholder')}
+                  />
+                  <ErrorMessage name="lastName" component="div" className="text-danger" />
+                </BootstrapForm.Group>
+                <BootstrapForm.Group className="mb-3" controlId="chosenName">
+                  <BootstrapForm.Label>{t('fields.chosenName.label')}</BootstrapForm.Label>
+                  <Field
+                    name="chosenName"
+                    as={BootstrapForm.Control}
+                    type="text"
+                    placeholder={t('fields.chosenName.placeholder')}
+                  />
+                  {!errors.chosenName && (
+                    <BootstrapForm.Text className="text-muted">{t('fields.chosenName.helpText')}</BootstrapForm.Text>
+                  )}
+                  <ErrorMessage name="chosenName" component="div" className="text-danger" />
+                </BootstrapForm.Group>
+                <h3 className="text-primary mt-4 mb-3 h5">{t('contactInfo')}</h3>
+                <BootstrapForm.Group className="mb-3" controlId="language">
+                  <BootstrapForm.Label>
+                    {t('fields.language.label')}
+                    <span className="text-danger">*</span>
+                  </BootstrapForm.Label>
+                  <BootstrapForm.Select
+                    name="language"
+                    onChange={e => {
+                      setFieldValue('language', e.target.value);
+                      i18n.changeLanguage(e.target.value);
+                    }}
+                    value={values.language}>
+                    <option value="fr">{tCommon('fr')}</option>
+                    <option value="en">{tCommon('en')}</option>
+                  </BootstrapForm.Select>
+                  <ErrorMessage name="language" component="div" className="text-danger" />
+                </BootstrapForm.Group>
+                <BootstrapForm.Group className="mb-3">
+                  <BootstrapForm.Label>{t('fields.email.label')}</BootstrapForm.Label>
+                  <BootstrapForm.Control value={user.email || user.email!} disabled />
+                  <BootstrapForm.Text className="text-muted">{t('fields.email.helpText')}</BootstrapForm.Text>
+                </BootstrapForm.Group>
+                <Stack direction="horizontal" gap={3}>
+                  <Button variant="primary" disabled={isSubmitting || !isValid || !dirty} type="submit">
+                    {isSubmitting ? <Spinner size="sm" /> : t('save')}
+                  </Button>
+                  <Button variant="danger" onClick={handleSignOut}>
+                    {t('signOut')}
+                  </Button>
+                </Stack>
+              </Form>
+            )}
+          </Formik>
+        </Card>
+        <Container fluid className="fixed-bottom z-0 d-flex justify-content-center align-items-end">
+          <p className="text-white z-1">UrbanNote v{process.env.VERSION}</p>
+          <img className="fixed-bottom w-100 z-0" src={peaks} alt="Peaks" />
+        </Container>
+      </Container>
+    </Container>
   );
 }

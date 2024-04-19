@@ -1,51 +1,55 @@
 import { useEffect } from 'react';
 
 import { ErrorMessage, Field, Form as FormikForm, useFormikContext } from 'formik';
-import { Col, OverlayTrigger, Tooltip, Button } from 'react-bootstrap';
+import { Col, OverlayTrigger, Tooltip, Button, Alert } from 'react-bootstrap';
 import BootstrapForm from 'react-bootstrap/Form';
 import { InfoCircle } from 'react-bootstrap-icons';
 import { useTranslation } from 'react-i18next';
 
-import type { CreateUserData } from '$firebase/auth';
+import type { AuthUser, CreateUserData } from '$firebase/auth';
+import { userIsAdmin } from '$helpers';
 import { useAppSelector } from '$store';
+import type { UserRolesState } from '$store/userStore';
 
 import './Form.scss';
 
-import type { UserDetails } from '../Users';
-
 export type FormProps = {
-  userRecord?: UserDetails;
+  authUser?: AuthUser;
+  userRoles: UserRolesState | null | undefined;
+  initialValues: CreateUserData;
 };
 
-function Form({ userRecord }: FormProps) {
+function Form({ authUser, userRoles, initialValues }: FormProps) {
   const { errors, touched, resetForm } = useFormikContext<CreateUserData>();
 
   const { t, i18n } = useTranslation('users');
   const { t: tCommon } = useTranslation('common');
 
-  const isUserAdmin = useAppSelector(state => state.user.roles?.admin);
+  const user = useAppSelector(state => state.user);
+  const isRequesterAdmin = userIsAdmin(user.roles);
+  const isAffectedUserAdmin = userRoles ? userIsAdmin(userRoles) : false;
+
+  /* If the connected user is not admin and the user to be modified is admin, the connected user is not
+   permitted to apply modifications */
+  const userNotPermitted = !isRequesterAdmin && isAffectedUserAdmin;
 
   useEffect(() => {
     resetForm({
       values: {
-        email: userRecord?.email ?? '',
-        emailVerified: Boolean(userRecord?.emailVerified),
-        firstName: userRecord?.profile?.firstName ?? '',
-        lastName: userRecord?.profile?.lastName ?? '',
-        language: userRecord?.profile?.language ?? i18n.language,
-        chosenName: userRecord?.profile?.chosenName ?? '',
-        disabled: Boolean(!userRecord?.disabled),
-        admin: Boolean(userRecord?.roles?.admin),
-        expenseManagement: Boolean(userRecord?.roles?.expenseManagement),
-        resourceManagement: Boolean(userRecord?.roles?.resourceManagement),
-        userManagement: Boolean(userRecord?.roles?.userManagement),
+        ...initialValues,
       },
     });
-  }, [userRecord, resetForm, i18n.language]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [authUser, resetForm, i18n.language]);
 
   return (
     <FormikForm>
       <div className="tab-form">
+        {userNotPermitted && (
+          <Alert key="info" variant="info">
+            {t('slideOut.permissions')}
+          </Alert>
+        )}
         <h4>{t('slideOut.accountInfo')}</h4>
         <p className="mb-4">
           {t('requiredFields')} (<span className="asterisque">*</span>).
@@ -63,30 +67,42 @@ function Form({ userRecord }: FormProps) {
             as={BootstrapForm.Control}
             isInvalid={touched.email && errors.email}
             placeholder={`${t('slideOut.emailForm')}`}
-            disabled={userRecord}
+            disabled={authUser}
           />
-          <BootstrapForm.Text hidden={Boolean(!userRecord)} className="email-text">
+          <BootstrapForm.Text hidden={Boolean(!authUser)} className="email-text">
             {t('slideOut.emailModified')}
           </BootstrapForm.Text>
           <ErrorMessage name="email" component={BootstrapForm.Text} className="text-danger" />
         </BootstrapForm.Group>
         <BootstrapForm.Group controlId="disabled">
           <div className="checkbox-form">
-            <Field type="checkbox" name="disabled" id="disabled" className="checkbox-field" />
+            <Field
+              type="checkbox"
+              name="disabled"
+              id="disabled"
+              className="checkbox-field"
+              disabled={userNotPermitted}
+            />
             <label htmlFor="disabled">{t('slideOut.enableCheckbox')}</label>
           </div>
         </BootstrapForm.Group>
         <BootstrapForm.Group controlId="emailVerified">
           <div className="checkbox-form">
-            <Field type="checkbox" name="emailVerified" id="emailVerified" className="checkbox-field" />
+            <Field
+              type="checkbox"
+              name="emailVerified"
+              id="emailVerified"
+              className="checkbox-field"
+              disabled={userNotPermitted}
+            />
             <label htmlFor="emailVerified">{t('slideOut.emailToBeVerified')}</label>
           </div>
         </BootstrapForm.Group>
         <h4 className="mt-5">{t('slideOut.accessManagement')}</h4>
         {/* Boolean Fields */}
         <BootstrapForm.Group controlId="admin">
-          <div className="checkbox-form">
-            <Field type="checkbox" name="admin" id="admin" className="checkbox-field" disabled={!isUserAdmin} />
+          <div className={isRequesterAdmin ? 'checkbox-form' : 'checkbox-admin-form'}>
+            <Field type="checkbox" name="admin" id="admin" className="checkbox-field" disabled={!isRequesterAdmin} />
             <label htmlFor="admin">{t('role.admin')}</label>
             <OverlayTrigger
               placement="top"
@@ -97,10 +113,17 @@ function Form({ userRecord }: FormProps) {
               </Button>
             </OverlayTrigger>
           </div>
+          {!isRequesterAdmin && <BootstrapForm.Text>{t('slideOut.adminCheckboxPermission')}</BootstrapForm.Text>}
         </BootstrapForm.Group>
         <BootstrapForm.Group controlId="expenseManagement">
           <div className="checkbox-form">
-            <Field type="checkbox" name="expenseManagement" id="expenseManagement" className="checkbox-field" />
+            <Field
+              type="checkbox"
+              name="expenseManagement"
+              id="expenseManagement"
+              className="checkbox-field"
+              disabled={userNotPermitted}
+            />
             <label htmlFor="expenseManagement">{t('role.expenseManagement')}</label>
             <OverlayTrigger
               placement="top"
@@ -114,7 +137,13 @@ function Form({ userRecord }: FormProps) {
         </BootstrapForm.Group>
         <BootstrapForm.Group controlId="resourceManagement">
           <div className="checkbox-form">
-            <Field type="checkbox" name="resourceManagement" id="resourceManagement" className="checkbox-field" />
+            <Field
+              type="checkbox"
+              name="resourceManagement"
+              id="resourceManagement"
+              className="checkbox-field"
+              disabled={userNotPermitted}
+            />
             <label htmlFor="resourceManagement">{t('role.resourceManagement')}</label>
             <OverlayTrigger
               placement="top"
@@ -128,7 +157,13 @@ function Form({ userRecord }: FormProps) {
         </BootstrapForm.Group>
         <BootstrapForm.Group controlId="userManagement">
           <div className="checkbox-form">
-            <Field type="checkbox" name="userManagement" id="userManagement" className="checkbox-field" />
+            <Field
+              type="checkbox"
+              name="userManagement"
+              id="userManagement"
+              className="checkbox-field"
+              disabled={userNotPermitted}
+            />
             <label htmlFor="userManagement">{t('role.userManagement')}</label>
             <OverlayTrigger
               placement="top"
@@ -155,6 +190,7 @@ function Form({ userRecord }: FormProps) {
             as={BootstrapForm.Control}
             isInvalid={touched.firstName && errors.firstName}
             placeholder={`${t('slideOut.firstNameForm')}`}
+            disabled={userNotPermitted}
           />
           <ErrorMessage name="firstName" component={BootstrapForm.Text} className="text-danger" />
         </BootstrapForm.Group>
@@ -170,6 +206,7 @@ function Form({ userRecord }: FormProps) {
             as={BootstrapForm.Control}
             isInvalid={touched.lastName && errors.lastName}
             placeholder={`${t('slideOut.lastNameForm')}`}
+            disabled={userNotPermitted}
           />
           <ErrorMessage name="lastName" component={BootstrapForm.Text} className="text-danger" />
         </BootstrapForm.Group>
@@ -179,7 +216,12 @@ function Form({ userRecord }: FormProps) {
           <BootstrapForm.Label>
             <b>{t('profile.chosenName')}</b>
           </BootstrapForm.Label>
-          <Field name="chosenName" as={BootstrapForm.Control} placeholder={`${t('slideOut.chosenNameForm')}`} />
+          <Field
+            name="chosenName"
+            as={BootstrapForm.Control}
+            placeholder={`${t('slideOut.chosenNameForm')}`}
+            disabled={userNotPermitted}
+          />
         </BootstrapForm.Group>
 
         {/* Language Field */}
@@ -188,7 +230,7 @@ function Form({ userRecord }: FormProps) {
             <b>{t('profile.language')}</b>
           </BootstrapForm.Label>
           <BootstrapForm.Label className="asterisque">*</BootstrapForm.Label>
-          <Field name="language" as={BootstrapForm.Select}>
+          <Field name="language" as={BootstrapForm.Select} disabled={userNotPermitted}>
             <option value="fr">{tCommon('fr')}</option>
             <option value="en">{tCommon('en')}</option>
           </Field>

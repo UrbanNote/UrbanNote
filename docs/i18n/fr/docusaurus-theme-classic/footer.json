@@ -23,8 +23,16 @@
     "message": "Guide d'installation",
     "description": "The label of footer link with label=Installation guide linking to /docs/category/installation-guide"
   },
+  "link.item.label.Utilisation guide": {
+    "message": "Guide d'utilisation",
+    "description": "The label of footer link with label=Utilisation guide linking to /docs/category/utilisation-guide"
+  },
   "link.item.label.API reference": {
     "message": "Référence de l'API",
     "description": "The label of footer link with label=API reference linking to /docs/api-reference"
+  },
+  "link.item.label.Architecture decisions": {
+    "message": "Décisions d'architecture",
+    "description": "The label of footer link with label=Architecture Decisions linking to /docs/category/architecture-decisions"
   }
 }

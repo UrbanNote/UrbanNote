@@ -4,6 +4,9 @@
       "unknown": "An unexpected error has occured while fetching your data. Please try again later."
     }
   },
+  "help-center": "Help Center",
+  "documentation": "Documentation",
+  "trainingVideos": "Training Videos",
   "settings": "Settings",
   "signOut": "Sign Out",
   "signIn": {

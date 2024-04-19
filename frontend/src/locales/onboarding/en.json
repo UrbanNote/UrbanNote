@@ -1,0 +1,54 @@
+{
+  "fields": {
+    "email": {
+      "label": "Email address",
+      "helpText": "You cannot change your email address."
+    },
+    "firstName": {
+      "label": "First Name",
+      "placeholder": "Enter your first name",
+      "required": "Please enter your first name."
+    },
+    "lastName": {
+      "label": "Last Name",
+      "placeholder": "Enter your last name",
+      "required": "Please enter your last name."
+    },
+    "chosenName": {
+      "label": "Chosen Name",
+      "placeholder": "Enter your chosen name",
+      "helpText": "This is the first name that will be displayed to other users."
+    },
+    "language": {
+      "label": "Language",
+      "required": "Please select a language."
+    }
+  },
+  "profile": "My Profile",
+  "contactInfo": "Contact Information",
+  "firstName": "First name",
+  "lastName": "Last name",
+  "firstNamePlaceholder": "Enter your first name",
+  "lastNamePlaceholder": "Enter your last name",
+  "chosenName": "Chosen name",
+  "chosenNamePlaceholder": "Enter your chosen name",
+  "chosenNameTips": " If you would like a different first name to appear in the app and communications, enter it here.",
+  "signOut": "Sign Out",
+  "save": "Save",
+  "language": "Language",
+  "fr": "French Canadian",
+  "en": "English",
+  "contactInformation": "Contact Informations",
+  "myProfile": "My Profile",
+  "greetingMessage": "🚀 Welcome to UrbanNote!",
+  "missingInfo": "We're missing some information to complete your profile ",
+  "requiredField": " Required fields are marked with an asterisk.",
+  "title": "Onboarding",
+  "firstNameRequired": "First name is required",
+  "lastNameRequired": "Last name is required",
+  "languageRequired": "Language is required",
+  "errors": {
+    "unknown": "An unexpected error occurred. Please try again later."
+  },
+  "success": "Your profile has been completed successfully!"
+}

@@ -30,6 +30,11 @@ export function useExpenses({ difference = 0, status: statusProp, userId }: UseE
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error>();
 
+  const onError = (error: unknown) => {
+    alert(t('useExpenses.errors.unknown'), 'danger');
+    setError(error as Error | undefined);
+  };
+
   useEffect(() => {
     let unsubscribe = () => {};
     setData(undefined);
@@ -41,14 +46,17 @@ export function useExpenses({ difference = 0, status: statusProp, userId }: UseE
         ? Object.values(ExpenseStatus).filter(s => s !== ExpenseStatus.ARCHIVED)
         : [statusProp];
       const expensesQuery = queryExpenses({ userId, start, end, status });
-      unsubscribe = onSnapshot(expensesQuery, snapshot => {
-        const expensesData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }) as ExpenseDetails);
-        setData(expensesData);
-        setLoading(false);
-      });
+      unsubscribe = onSnapshot(
+        expensesQuery,
+        snapshot => {
+          const expensesData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }) as ExpenseDetails);
+          setData(expensesData);
+          setLoading(false);
+        },
+        onError,
+      );
     } catch (error) {
-      alert(t('useExpenses.errors.unknown'), 'danger');
-      setError(error as Error);
+      onError(error);
     }
 
     return unsubscribe;

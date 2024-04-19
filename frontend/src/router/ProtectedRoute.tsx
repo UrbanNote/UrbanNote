@@ -6,7 +6,7 @@ import { useAppSelector } from '$store';
 
 import type { ProtectedRouteProps } from './types';
 
-export function ProtectedRoute({
+function ProtectedRoute({
   children,
   admin,
   expenseManagement,
@@ -44,3 +44,5 @@ export function ProtectedRoute({
 
   return children;
 }
+
+export default ProtectedRoute;

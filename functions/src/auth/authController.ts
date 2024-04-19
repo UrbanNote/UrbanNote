@@ -4,6 +4,7 @@ import { inject, injectable } from 'tsyringe';
 
 import { IAuthInteractor } from './authInteractor';
 import { AuthUserDetails } from './authUserDetails';
+import { UpdateUserDetails } from './updateUserDetails';
 import { UserDetails } from './userDetails';
 import { UserWithName } from './userWithName';
 import { ApplicationError, handleError } from '../errors';
@@ -88,7 +89,7 @@ export interface IAuthController {
   /**
    * Updates an Auth user in the Auth provider.
    */
-  updateUser(data: AuthUserDetails, context: CallableContext): Promise<void>;
+  updateUser(data: UpdateUserDetails, context: CallableContext): Promise<void>;
 
   /**
    * Disables an Auth user in the Auth provider. A disabled user cannot sign in.
@@ -167,7 +168,7 @@ export class AuthController implements IAuthController {
     }
   }
 
-  public async updateUser(data: AuthUserDetails, context: CallableContext): Promise<void> {
+  public async updateUser(data: UpdateUserDetails, context: CallableContext): Promise<void> {
     try {
       if (!context.auth) {
         throw new ApplicationError('unauthenticated', 'Unauthenticated');
@@ -175,11 +176,61 @@ export class AuthController implements IAuthController {
 
       await this.authInteractor.updateAuthUser(
         context.auth.uid,
-        data.disabled,
-        data.email,
-        data.displayName,
-        data.emailVerified,
+        data.auth.disabled,
+        data.auth.email,
+        data.auth.emailVerified,
       );
+
+      const userProfile = await this.userInteractor.getUserProfile(data.userId);
+
+      // Si l'utilisateur n'a pas de userProfile, le créer
+      if (userProfile === null) {
+        this.userInteractor.createUserProfile(
+          context.auth.uid,
+          data.userId,
+          data.auth.email,
+          data.userProfile.firstName,
+          data.userProfile.lastName,
+          data.userProfile.language,
+          data.userProfile.chosenName,
+          data.userProfile.pictureId,
+        );
+      } else {
+        // Sinon, modifier son userProfile
+        await this.userInteractor.updateUserProfile(
+          context.auth.uid,
+          data.userId,
+          data.userProfile.firstName,
+          data.userProfile.lastName,
+          data.userProfile.language,
+          data.userProfile.chosenName,
+          data.userProfile.pictureId,
+        );
+      }
+
+      const userRoles = await this.userInteractor.getUserRoles(data.userId);
+
+      // Si l'utilisateur n'a pas de userRoles, le créer
+      if (userRoles === null) {
+        this.userInteractor.createUserRoles(
+          context.auth.uid,
+          data.userId,
+          data.userRoles.admin,
+          data.userRoles.expenseManagement,
+          data.userRoles.resourceManagement,
+          data.userRoles.userManagement,
+        );
+      } else {
+        // Sinon, modifier son userRoles
+        await this.userInteractor.updateUserRoles(
+          context.auth.uid,
+          data.userId,
+          data.userRoles.admin,
+          data.userRoles.expenseManagement,
+          data.userRoles.resourceManagement,
+          data.userRoles.userManagement,
+        );
+      }
     } catch (error) {
       throw handleError(error);
     }

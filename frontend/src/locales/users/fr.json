@@ -1,6 +1,7 @@
 {
   "title": "Utilisateurs",
   "createUsers": "Créer un nouvel utilisateur",
+  "updateUser": "Modifier cet utilisateur",
   "applyFilters": "Appliquer",
   "resetFilters": "Réinitialiser les filtres",
   "noUsersFilter": "Aucun utilisateur ne correspond à votre recherche.", 
@@ -43,6 +44,8 @@
         "userProfile": "Profil utilisateur"
       },
       "accountInfo": "Informations du compte",
+      "permissions": "Vous n'êtes pas autorisé à modifier cet utilisateur",
+      "adminCheckboxPermission": "Vous devez être administrateur pour pouvoir gérer cet accès",
       "emailForm": "Entrez une adresse courriel",
       "emailModified": "Ne peut pas être modifiée",
       "enableCheckbox": "Activé - peut se connecter à la plateforme",
@@ -78,11 +81,12 @@
     "editUser": {
       "errors": {
         "UserNotFound": "L'utilisateur que vous tentez de modifier n'existe pas.",
-        "unexpected": "Une erreur inattendue est survenue. Veuillez réessayer plus tard."
+        "unexpected": "Une erreur inattendue est survenue. Veuillez réessayer plus tard.",
+        "permissionDenied": "Vous n'avez pas les permissions d'effectuer cette action."
       },
       "success": "L'utilisateur a été enregistré avec succès.",
       "confirm": "Enregistrer les modifications",
-      "statusChangedSuccess": "Le status de l'utilisateur a été modifié avec succès."
+      "statusChangedSuccess": "Le statut de l'utilisateur a été modifié avec succès."
     },
     "createOrEdit": {
       "fields": {

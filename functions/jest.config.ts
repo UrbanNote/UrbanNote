@@ -28,6 +28,7 @@ const config: JestConfigWithTsJest = {
     'src/baseEntity.ts',
     'src/container.ts',
     'src/storage/fileMetadata.ts',
+    'src/auth/userWithName.ts',
   ],
 
   // Indicates which provider should be used to instrument code for coverage
@@ -38,15 +39,15 @@ const config: JestConfigWithTsJest = {
 
   // An object that configures minimum threshold enforcement for coverage results
   // ce serait bien de mettre le minimum dont on parle dans notre DoD
-  coverageThreshold: undefined,
-  // coverageThreshold: {
-  //   global: {
-  //     branches: 80,
-  //     functions: 80,
-  //     lines: 80,
-  //     statements: 80,
-  //   },
-  // },
+  // coverageThreshold: undefined,
+  coverageThreshold: {
+    global: {
+      branches: 80,
+      functions: 80,
+      lines: 80,
+      statements: 80,
+    },
+  },
 };
 
 export default config;

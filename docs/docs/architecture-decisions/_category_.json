@@ -1,0 +1,8 @@
+{
+  "label": "Architecture decisions",
+  "position": 4,
+  "link": {
+    "type": "generated-index",
+    "description": "🧑‍💻 Learn about or software architecture decisions. If you're planning on contributing or forking the project, or if you're just curious about UrbanNote's design choices, this is where you will find all you need to know."
+  }
+}

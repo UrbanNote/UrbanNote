@@ -5,23 +5,23 @@ import { ThreeDots, Pencil, ToggleOff, ToggleOn } from 'react-bootstrap-icons';
 import { useTranslation } from 'react-i18next';
 
 import { Scrollbar } from '$components';
-import type { GetAuthUsersResponse, GetUsersResponse } from '$firebase/auth';
+import type { AuthUser, GetAuthUsersResponse } from '$firebase/auth';
 import { disableUser, enableUser } from '$firebase/auth';
+import { isFirebaseError } from '$helpers';
 import { useAlerts } from '$hooks';
 
 import { Status } from './enum/Status';
-import type { AuthUserDetails, UserDetails } from './Users';
+import type { AuthUserDetails } from './Users';
 
 export type UsersTableProps = PropsWithChildren<{
   authUsers: GetAuthUsersResponse;
   isFiltered: boolean;
-  users: GetUsersResponse;
-  setUserToUpdate: (user: UserDetails) => void;
+  setUserToUpdate: (user: AuthUser) => void;
   setShow: (show: boolean) => void;
   onUpdate: () => void;
 }>;
 
-export function UsersTable({ authUsers, isFiltered, users, setUserToUpdate, setShow, onUpdate }: UsersTableProps) {
+export function UsersTable({ authUsers, isFiltered, setUserToUpdate, setShow, onUpdate }: UsersTableProps) {
   const { t } = useTranslation('users');
   const alert = useAlerts();
 
@@ -30,43 +30,32 @@ export function UsersTable({ authUsers, isFiltered, users, setUserToUpdate, setS
   }
 
   const handleUpdate = (authUserDetails: AuthUserDetails) => {
-    for (const user of users.users) {
-      if (user.id === authUserDetails.uid) {
-        const userToUpdate: UserDetails = {
-          id: authUserDetails.uid,
-          email: authUserDetails.email,
-          emailVerified: authUserDetails.emailVerified,
-          disabled: authUserDetails.disabled,
-          profile: {
-            firstName: user.profile?.firstName,
-            lastName: user.profile?.lastName,
-            language: user.profile?.language,
-            chosenName: user.profile?.chosenName,
-            pictureId: user.profile?.pictureId,
-          },
-          roles: {
-            admin: user.roles?.admin,
-            expenseManagement: user.roles?.expenseManagement,
-            resourceManagement: user.roles?.resourceManagement,
-            userManagement: user.roles?.userManagement,
-          },
-        };
-        setUserToUpdate(userToUpdate);
+    for (const user of authUsers.users) {
+      if (user.uid === authUserDetails.uid) {
+        setUserToUpdate(user);
         setShow(true);
         break;
       }
     }
   };
 
-  const handleStatus = async (authUserDetails: AuthUserDetails, status: Status) => {
-    if (status === Status.DISABLE) {
-      await disableUser({ id: authUserDetails.uid });
-    } else {
-      await enableUser({ id: authUserDetails.uid });
-    }
+  const handleStatusChange = async (authUserDetails: AuthUserDetails, status: Status) => {
+    try {
+      if (status === Status.DISABLE) {
+        await disableUser({ id: authUserDetails.uid });
+      } else {
+        await enableUser({ id: authUserDetails.uid });
+      }
 
-    alert(t(`editUser.statusChangedSuccess`), 'success');
-    onUpdate();
+      alert(t(`editUser.statusChangedSuccess`), 'success');
+      onUpdate();
+    } catch (error) {
+      if (isFirebaseError(error)) {
+        return alert(t(`editUser.errors.${error.message}`), 'danger');
+      }
+
+      alert(t(`editUser.errors.unexpected`), 'danger');
+    }
   };
 
   return (
@@ -101,13 +90,13 @@ export function UsersTable({ authUsers, isFiltered, users, setUserToUpdate, setS
                           </Dropdown.Item>
                           <Dropdown.Item
                             hidden={authUserDetails.disabled}
-                            onClick={() => handleStatus(authUserDetails, Status.DISABLE)}>
+                            onClick={() => handleStatusChange(authUserDetails, Status.DISABLE)}>
                             <ToggleOff className="dots-dropdown"></ToggleOff>
                             {t('dots.disable')}
                           </Dropdown.Item>
                           <Dropdown.Item
                             hidden={!authUserDetails.disabled}
-                            onClick={() => handleStatus(authUserDetails, Status.ENABLE)}>
+                            onClick={() => handleStatusChange(authUserDetails, Status.ENABLE)}>
                             <ToggleOn className="dots-dropdown"></ToggleOn>
                             {t('dots.enable')}
                           </Dropdown.Item>

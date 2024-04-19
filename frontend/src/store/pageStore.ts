@@ -1,11 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 
+import type { TrainingVideos } from '$components/TrainingVideo';
+
 export type PageState = {
   title?: string;
   titleShort?: string;
   background?: string;
   backLink?: string;
+  trainingVideo?: TrainingVideos;
 };
 
 const initialState: PageState = {
@@ -13,6 +16,7 @@ const initialState: PageState = {
   titleShort: undefined,
   background: undefined,
   backLink: undefined,
+  trainingVideo: undefined,
 };
 
 export const pageSlice = createSlice({
@@ -24,6 +28,7 @@ export const pageSlice = createSlice({
       state.titleShort = action.payload.titleShort;
       state.background = action.payload.background;
       state.backLink = action.payload.backLink;
+      state.trainingVideo = action.payload.trainingVideo;
     },
   },
 });

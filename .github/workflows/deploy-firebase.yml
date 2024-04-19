@@ -1,0 +1,53 @@
+name: Deploy to Firebase
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy_to_firebase:
+    name: Deploy to Firebase
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '18'
+
+      - name: Create .env file in ./frontend
+        run: |
+          echo "" > .env
+          echo "VITE_APP_PUBLIC_URL=${{ secrets.APP_PUBLIC_URL }}" >> .env
+          echo "VITE_DOCUMENTATION_URL_EN=${{ secrets.DOCUMENTATION_URL_EN }}" >> .env
+          echo "VITE_DOCUMENTATION_URL_FR=${{ secrets.DOCUMENTATION_URL_FR }}" >> .env
+          echo "VITE_EXPENSES_MONTH_FIRST_DAY=${{ secrets.EXPENSES_MONTH_FIRST_DAY }}"
+          echo "VITE_FIREBASE_API_KEY=${{ secrets.FIREBASE_API_KEY }}" >> .env
+          echo "VITE_FIREBASE_AUTH_DOMAIN=${{ secrets.FIREBASE_AUTH_DOMAIN }}" >> .env
+          echo "VITE_FIREBASE_PROJECT_ID=${{ secrets.FIREBASE_PROJECT_ID }}" >> .env
+          echo "VITE_FIREBASE_STORAGE_BUCKET=${{ secrets.FIREBASE_STORAGE_BUCKET }}" >> .env
+          echo "VITE_FIREBASE_MESSAGING_SENDER_ID=${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}" >> .env
+          echo "VITE_FIREBASE_APP_ID=${{ secrets.FIREBASE_APP_ID }}" >> .env
+          echo "VITE_FIREBASE_MEASUREMENT_ID=${{ secrets.FIREBASE_MEASUREMENT_ID }}" >> .env
+        working-directory: ./frontend
+
+      - name: Install dependencies and build ./frontend
+        run: |
+          yarn install
+          yarn build
+        working-directory: ./frontend
+
+      - name: Install dependencies in ./functions
+        run: yarn install
+        working-directory: ./functions
+
+      - name: Deploy to Firebase
+        run: |
+          yarn global add firebase-tools
+          echo -n "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}" | base64 -d > private-key.json
+          firebase deploy --non-interactive --project ${{ secrets.FIREBASE_PROJECT_ID }}
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: private-key.json

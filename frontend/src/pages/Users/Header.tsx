@@ -3,10 +3,10 @@ import type { PropsWithChildren } from 'react';
 import { Button } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 
-import type { UserDetails } from './Users';
+import type { AuthUser } from '$firebase/auth';
 
 export type HeaderUsersProps = PropsWithChildren<{
-  setUserToUpdate: (user?: UserDetails) => void;
+  setUserToUpdate: (user?: AuthUser) => void;
   setShow: (show: boolean) => void;
 }>;
 

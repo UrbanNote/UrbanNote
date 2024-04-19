@@ -32,6 +32,11 @@
       "required": "Veuillez sélectionner une langue."
     }
   },
+  "general": "Général",
+  "resetTrainingVideos": {
+    "tip": "Vous avez masqué certaines vidéos de formation. Voulez-vous toutes les afficher à nouveau ?",
+    "button": "Afficher à nouveau les vidéos masquées"
+  },
   "profile": "Mon profil",
   "contactInfo": "Informations de contact"
 }

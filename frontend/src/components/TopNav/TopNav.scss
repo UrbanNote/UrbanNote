@@ -16,11 +16,19 @@
     display: block;
   }
 
-  .TopNav__UserMenu {
-    .TopNav__UserMenu__Toggle {
+  .TopNav__UserMenu,
+  .TopNav__HelpMenu {
+    .TopNav__UserMenu__Toggle,
+    .TopNav__HelpMenu__Toggle {
       &::after {
         display: none;
       }
+    }
+  }
+
+  .TopNav__HelpMenu {
+    .TopNav__HelpMenu__Toggle {
+      // padding: 0;
     }
   }
 }

@@ -1,6 +1,8 @@
 import { inject, injectable } from 'tsyringe';
 
+import { UserProfileDoc } from './userProfileDoc';
 import { IUserRepository } from './userRepository';
+import { UserRolesDoc } from './userRolesDoc';
 import { IAuthorizationService } from '../auth/authorizationService';
 import { ApplicationError } from '../errors';
 
@@ -95,6 +97,20 @@ export interface IUserInteractor {
     resourceManagement: boolean,
     userManagement: boolean,
   ): Promise<void>;
+
+  /**
+   * Gets a user's profile document.
+   * @param userId
+   * @returns A promise that resolves when the userProfile has been retrieved.
+   */
+  getUserProfile(userId: string): Promise<UserProfileDoc | null>;
+
+  /**
+   * Gets a user's roles document.
+   * @param userId
+   * @returns A promise that resolves when the userRoles has been retrieved.
+   */
+  getUserRoles(userId: string): Promise<UserRolesDoc | null>;
 }
 
 @injectable()
@@ -188,6 +204,12 @@ export class UserInteractor implements IUserInteractor {
       await this.authorizationService.assertUserHasUserManagementRole(requesterId);
     }
 
+    // If the requester is not admin, he can't update an user admin
+    const userRoles = await this.userRepository.getUserRoles(userId);
+    if (userRoles?.admin) {
+      await this.authorizationService.assertUserIsAdmin(requesterId);
+    }
+
     const userProfile = await this.userRepository.getUserProfileById(userId);
     if (!userProfile) {
       throw new ApplicationError('not-found', 'userProfileNotFound');
@@ -214,13 +236,12 @@ export class UserInteractor implements IUserInteractor {
       await this.authorizationService.assertUserHasUserManagementRole(requesterId);
     }
 
-    // If the requester is not admin, he can't update an user admin
-    const requesterRoles = await this.userRepository.getUserRoles(requesterId);
-    if (!requesterRoles?.admin && admin) {
-      throw new ApplicationError('permission-denied', 'permissionDenied');
+    // If the requester is not admin, he can't update the userRoles of an admin user and he can't update a user to make it with admin role
+    const userRoles = await this.userRepository.getUserRoles(userId);
+    if (userRoles?.admin || admin) {
+      await this.authorizationService.assertUserIsAdmin(requesterId);
     }
 
-    const userRoles = await this.userRepository.getUserRoles(userId);
     if (!userRoles) {
       throw new ApplicationError('not-found', 'userRolesNotFound');
     }
@@ -231,5 +252,15 @@ export class UserInteractor implements IUserInteractor {
       resourceManagement,
       userManagement,
     });
+  }
+
+  public async getUserProfile(userId: string): Promise<UserProfileDoc | null> {
+    const userProfile = await this.userRepository.getUserProfileById(userId);
+    return userProfile;
+  }
+
+  public async getUserRoles(userId: string): Promise<UserRolesDoc | null> {
+    const userRoles = await this.userRepository.getUserRoles(userId);
+    return userRoles;
   }
 }

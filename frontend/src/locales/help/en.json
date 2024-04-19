@@ -1,0 +1,21 @@
+{
+  "trainingVideos": {
+    "onFirstDissmiss": "You can reset hidden videos in the user menu settings.",
+    "playlist": {
+      "title": "Tutorial Videos",
+      "src": "https://www.youtube.com/embed/videoseries?si=UuhyNsfB2SpBR7Xn&amp;list=PL9Ppsd1La5FkSfpwQbXoMbMAAhOWva4ZH"
+    },
+    "expenses-creation": {
+      "title": "Learn how to create your expenses on UrbanNote!",
+      "src": "https://www.youtube.com/embed/bFklH1QXdng?si=IKsNyrg5nz4GZSQq"
+    },
+    "expenses-management": {
+      "title": "Learn how to manage your employee expenses on UrbanNote!",
+      "src": "https://www.youtube.com/embed/jgw21L5WVQ8?si=x9R_1b8XMBXycXQ5"
+    },
+    "users-management": {
+      "title": "Learn how to manage the users on UrbanNote!",
+      "src": "https://www.youtube.com/embed/W32ApRXlMWI"
+    }
+  }
+}

@@ -170,7 +170,7 @@ function CreateOrEditSlideOut({
           <SlideOut.Footer
             confirmLabel={isSubmitting ? <Spinner size="sm" /> : t(`${mode}.confirm`)}
             confirmProps={{
-              disabled: isUploading || isSubmitting || !isValid || !dirty,
+              disabled: isUploading || isSubmitting || !isValid || (uploadedPictures.length < 1 && !dirty),
               onClick: handleSubmit,
             }}
           />

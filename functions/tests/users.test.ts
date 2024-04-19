@@ -1386,4 +1386,39 @@ describe('Users', () => {
       ),
     ).rejects.toThrow(ApplicationError);
   });
+
+  // Test d'un utilisateur userManagement qui modifie le profil d'un utilisateur admin
+  it('throw an error: user with userManagement role tries to update the userProfile of an admin user', async () => {
+    const input1 = {
+      requesterId: 'user2',
+      userId: 'user5',
+      firstName: 'Name',
+      lastName: 'Modified',
+      language: 'fr',
+    };
+
+    await expect(
+      userInteractor.updateUserProfile(
+        input1.requesterId,
+        input1.userId,
+        input1.firstName,
+        input1.lastName,
+        input1.language,
+      ),
+    ).rejects.toThrow(ApplicationError);
+  });
+
+  /** *********************************** */
+  /* Tests d'obtention d'utilisateurs     */
+  /** *********************************** */
+
+  // Test d'obtention du userProfile d'un utilisateur
+  it('user gets the userProfile of a user', async () => {
+    await userInteractor.getUserProfile('user4');
+  });
+
+  // Test d'obtention du userRoles d'un utilisateur
+  it('user gets the userRoles of a user', async () => {
+    await userInteractor.getUserRoles('user4');
+  });
 });
